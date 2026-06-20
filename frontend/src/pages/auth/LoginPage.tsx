@@ -1,9 +1,10 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { login, clearError } from '@/features/auth/authSlice';
+import { login, googleLogin, clearError } from '@/features/auth/authSlice';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
@@ -33,6 +34,16 @@ export default function LoginPage() {
     if (login.fulfilled.match(result)) {
       const role = result.payload.role;
       navigate(role === 'admin' ? '/admin' : from);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (credentialResponse.credential) {
+      const result = await dispatch(googleLogin({ credential: credentialResponse.credential }));
+      if (googleLogin.fulfilled.match(result)) {
+        const role = result.payload.role;
+        navigate(role === 'admin' ? '/admin' : from);
+      }
     }
   };
 
@@ -72,6 +83,24 @@ export default function LoginPage() {
           <Button type="submit" loading={loading} className="w-full">
             Sign In
           </Button>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-gray-500">Or continue with</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                console.log('Login Failed');
+              }}
+            />
+          </div>
         </form>
 
         <p className="mt-6 text-center text-sm text-muted">

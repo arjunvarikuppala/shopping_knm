@@ -4,6 +4,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
+  avatar?: string;
   role: UserRole;
   isBlocked?: boolean;
   addresses?: Address[];

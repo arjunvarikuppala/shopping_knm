@@ -15,6 +15,10 @@ import {
 import { UserRole, JwtPayload } from '../types';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../utils/email';
 import { generateOTP } from '../utils/otp';
+import { OAuth2Client } from 'google-auth-library';
+import { config } from '../config';
+
+const client = new OAuth2Client(config.google.clientId);
 
 export class AuthService {
   async register(name: string, email: string, mobile: string | undefined, password: string) {
@@ -57,6 +61,10 @@ export class AuthService {
 
     if (user.isBlocked) {
       throw new UnauthorizedError('Your account has been blocked');
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedError('Please log in with Google');
     }
 
     const isMatch = await comparePassword(password, user.password);
@@ -205,6 +213,60 @@ export class AuthService {
     await sendVerificationEmail(email, otp);
     
     return { message: 'A new OTP has been sent to your email' };
+  }
+  async googleLogin(credential: string) {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: config.google.clientId,
+    });
+    
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
+      throw new BadRequestError('Invalid Google token');
+    }
+
+    const { email, name, sub: googleId, picture } = payload;
+
+    let user = await User.findOne({ email }).select('+refreshToken');
+    
+    if (user) {
+      if (user.isBlocked) {
+        throw new UnauthorizedError('Your account has been blocked');
+      }
+      let shouldSave = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        shouldSave = true;
+      }
+      if (picture && user.avatar !== picture) {
+        user.avatar = picture;
+        shouldSave = true;
+      }
+      if (shouldSave) {
+        await user.save();
+      }
+    } else {
+      user = await User.create({
+        name: name || 'Google User',
+        email,
+        googleId,
+        avatar: picture,
+        role: UserRole.CUSTOMER,
+      });
+    }
+
+    const jwtPayload: JwtPayload = {
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    };
+
+    const tokens = generateAuthTokens(jwtPayload);
+    user.refreshToken = tokens.refreshToken;
+    await user.save();
+
+    user.password = undefined as unknown as string;
+    return { user, tokens };
   }
 }
 

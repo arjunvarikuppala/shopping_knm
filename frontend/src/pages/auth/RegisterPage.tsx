@@ -1,9 +1,10 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { register, clearError, verifyOtp, resendOtp } from '@/features/auth/authSlice';
+import { register, clearError, verifyOtp, resendOtp, googleLogin } from '@/features/auth/authSlice';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
@@ -66,6 +67,15 @@ export default function RegisterPage() {
     alert('A new OTP has been sent to your email.');
   };
 
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (credentialResponse.credential) {
+      const result = await dispatch(googleLogin({ credential: credentialResponse.credential }));
+      if (googleLogin.fulfilled.match(result)) {
+        navigate('/');
+      }
+    }
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
@@ -115,6 +125,24 @@ export default function RegisterPage() {
             <Button type="submit" loading={loading} className="w-full">
               Continue
             </Button>
+            
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+              />
+            </div>
           </form>
         ) : (
           <form onSubmit={handleVerifyOtp} className="card space-y-4 p-6">

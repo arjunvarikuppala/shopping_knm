@@ -124,7 +124,19 @@ function ProfileContent() {
 
   return (
     <div className="container-app py-8">
-      <h1 className="mb-8 text-3xl font-bold">My Profile</h1>
+      <div className="mb-8 flex items-center gap-4">
+        {user?.avatar ? (
+          <img src={user.avatar} alt={user.name} className="h-16 w-16 rounded-full object-cover shadow-sm" />
+        ) : (
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-3xl text-white font-bold shadow-sm">
+            {user?.name?.charAt(0).toUpperCase() || 'U'}
+          </div>
+        )}
+        <div>
+          <h1 className="text-3xl font-bold">My Profile</h1>
+          <p className="text-muted">{user?.name}</p>
+        </div>
+      </div>
 
       {message && (
         <div className="mb-4 rounded-lg bg-green-50 p-3 text-sm text-green-700">{message}</div>

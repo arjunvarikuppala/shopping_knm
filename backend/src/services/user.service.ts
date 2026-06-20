@@ -33,6 +33,10 @@ export class UserService {
     const user = await User.findById(userId).select('+password');
     if (!user) throw new NotFoundError('User not found');
 
+    if (!user.password) {
+      throw new UnauthorizedError('Please log in with Google to change your password');
+    }
+
     const isMatch = await comparePassword(currentPassword, user.password);
     if (!isMatch) throw new UnauthorizedError('Current password is incorrect');
 

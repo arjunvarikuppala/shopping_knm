@@ -34,6 +34,22 @@ export const login = createAsyncThunk(
   },
 );
 
+export const googleLogin = createAsyncThunk(
+  'auth/googleLogin',
+  async (credentials: { credential: string }, { rejectWithValue }) => {
+    try {
+      const { data } = await authApi.googleLogin(credentials);
+      const { user, tokens } = data.data!;
+      localStorage.setItem('accessToken', tokens.accessToken);
+      localStorage.setItem('refreshToken', tokens.refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error));
+    }
+  },
+);
+
 export const register = createAsyncThunk(
   'auth/register',
   async (
@@ -112,6 +128,19 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

@@ -18,7 +18,9 @@ export interface IUser extends Document {
   name: string;
   email: string;
   mobile: string;
-  password: string;
+  password?: string;
+  googleId?: string;
+  avatar?: string;
   role: UserRole;
   isBlocked: boolean;
   refreshToken?: string;
@@ -68,9 +70,20 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: function (this: any) {
+        return !this.googleId;
+      },
       minlength: [8, 'Password must be at least 8 characters'],
       select: false,
+    },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true,
+    },
+    avatar: {
+      type: String,
+      trim: true,
     },
     role: {
       type: String,

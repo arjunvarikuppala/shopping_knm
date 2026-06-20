@@ -14,6 +14,7 @@ const router = Router();
 
 router.post('/register', authLimiter, validate(registerValidation), authController.register);
 router.post('/login', authLimiter, validate(loginValidation), authController.login);
+router.post('/google', authLimiter, authController.googleLogin);
 router.post('/verify-otp', authLimiter, authController.verifyOtp);
 router.post('/resend-otp', authLimiter, authController.resendOtp);
 router.post('/refresh', authController.refreshToken);

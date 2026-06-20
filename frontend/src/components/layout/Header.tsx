@@ -59,8 +59,15 @@ export default function Header() {
                   Admin
                 </Link>
               )}
-              <Link to="/profile" className="text-sm font-medium hover:text-accent">
-                {user?.name}
+              <Link to="/profile" className="flex items-center gap-2 text-sm font-medium hover:text-accent">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover shadow-sm" />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-white font-bold shadow-sm">
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                )}
+                <span className="hidden sm:inline">{user?.name}</span>
               </Link>
               <button onClick={handleLogout} className="text-sm text-muted hover:text-accent">
                 Logout
