@@ -14,7 +14,16 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: config.clientUrl,
+    origin: (origin, callback) => {
+      const allowedOrigins = config.clientUrl.split(',').map(url => url.trim());
+      // Allow requests with no origin (like mobile apps or curl requests)
+      // or if the origin is in our allowed list
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
