@@ -1,37 +1,31 @@
 import { useEffect, useState, FormEvent } from 'react';
-import { userApi } from '@/services';
+import { Link } from 'react-router-dom';
+import { userApi, orderApi } from '@/services';
 import { getErrorMessage } from '@/services/api';
-import { User, Address } from '@/types';
+import { User, Order } from '@/types';
 import { useAppDispatch } from '@/app/hooks';
 import { setUser } from '@/features/auth/authSlice';
+import { formatPrice, formatDate, getOrderStatusColor } from '@/utils';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Modal from '@/components/ui/Modal';
+import Spinner from '@/components/ui/Spinner';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 
 function ProfileContent() {
   const dispatch = useAppDispatch();
   const [user, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'info' | 'password' | 'addresses'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'password' | 'orders'>('info');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const [profileForm, setProfileForm] = useState({ name: '', email: '' });
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-  const [addressModal, setAddressModal] = useState(false);
-  const [addressForm, setAddressForm] = useState({
-    label: 'Home',
-    fullName: '',
-    street: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'USA',
-    phone: '',
-    isDefault: false,
-  });
   const [saving, setSaving] = useState(false);
+
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersFetched, setOrdersFetched] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -50,6 +44,17 @@ function ProfileContent() {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'orders' && !ordersFetched) {
+      setOrdersLoading(true);
+      orderApi.getMyOrders().then((res) => {
+        setOrders(res.data.data as Order[]);
+        setOrdersFetched(true);
+        setOrdersLoading(false);
+      }).catch(() => setOrdersLoading(false));
+    }
+  }, [activeTab, ordersFetched]);
 
   const handleProfileUpdate = async (e: FormEvent) => {
     e.preventDefault();
@@ -89,37 +94,12 @@ function ProfileContent() {
     }
   };
 
-  const handleAddAddress = async (e: FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      const { data } = await userApi.addAddress(addressForm);
-      setUserData(data.data as User);
-      setAddressModal(false);
-      setMessage('Address added');
-    } catch (err) {
-      setError(getErrorMessage(err));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDeleteAddress = async (id: string) => {
-    if (!confirm('Delete this address?')) return;
-    try {
-      const { data } = await userApi.deleteAddress(id);
-      setUserData(data.data as User);
-    } catch (err) {
-      setError(getErrorMessage(err));
-    }
-  };
-
   if (loading) return <div className="container-app py-16 text-center">Loading...</div>;
 
   const tabs = [
     { id: 'info' as const, label: 'Personal Info' },
     { id: 'password' as const, label: 'Change Password' },
-    { id: 'addresses' as const, label: 'Saved Addresses' },
+    { id: 'orders' as const, label: 'My Orders' },
   ];
 
   return (
@@ -145,12 +125,12 @@ function ProfileContent() {
         <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
       )}
 
-      <div className="flex gap-4 border-b mb-6">
+      <div className="flex gap-4 border-b mb-6 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => { setActiveTab(tab.id); setMessage(''); setError(''); }}
-            className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+            className={`pb-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
               activeTab === tab.id ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-primary'
             }`}
           >
@@ -205,62 +185,46 @@ function ProfileContent() {
         </form>
       )}
 
-      {activeTab === 'addresses' && (
+      {activeTab === 'orders' && (
         <div>
-          <Button onClick={() => setAddressModal(true)} className="mb-4">
-            Add New Address
-          </Button>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {user?.addresses?.map((addr: Address) => (
-              <div key={addr._id} className="card p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{addr.label}</span>
-                  {addr.isDefault && (
-                    <span className="rounded-full bg-accent/10 px-2 py-0.5 text-xs text-accent">Default</span>
-                  )}
-                </div>
-                <p className="mt-2 text-sm text-muted">
-                  {addr.fullName}<br />
-                  {addr.street}<br />
-                  {addr.city}, {addr.state} {addr.zipCode}<br />
-                  {addr.phone}
-                </p>
-                <button
-                  onClick={() => handleDeleteAddress(addr._id)}
-                  className="mt-2 text-sm text-red-500 hover:underline"
+          {ordersLoading ? (
+            <Spinner size="md" className="min-h-[200px]" />
+          ) : orders.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted">No orders yet</p>
+              <Link to="/products" className="btn-primary mt-4 inline-block">
+                Start Shopping
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <Link
+                  key={order._id}
+                  to={`/orders/${order._id}`}
+                  className="card block p-6 transition-shadow hover:shadow-md"
                 >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-muted">Order #{order._id.slice(-8).toUpperCase()}</p>
+                      <p className="font-medium">{formatDate(order.createdAt)}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className={`rounded-full px-3 py-1 text-xs font-medium capitalize ${getOrderStatusColor(order.orderStatus)}`}>
+                        {order.orderStatus}
+                      </span>
+                      <span className="font-semibold text-accent">{formatPrice(order.totalAmount)}</span>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm text-muted">
+                    {order.products.length} item{order.products.length > 1 ? 's' : ''}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
-
-      <Modal isOpen={addressModal} onClose={() => setAddressModal(false)} title="Add Address">
-        <form onSubmit={handleAddAddress} className="space-y-4">
-          <Input label="Label" value={addressForm.label} onChange={(e) => setAddressForm({ ...addressForm, label: e.target.value })} required />
-          <Input label="Full Name" value={addressForm.fullName} onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })} required />
-          <Input label="Street" value={addressForm.street} onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })} required />
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="City" value={addressForm.city} onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })} required />
-            <Input label="State" value={addressForm.state} onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })} required />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Zip Code" value={addressForm.zipCode} onChange={(e) => setAddressForm({ ...addressForm, zipCode: e.target.value })} required />
-            <Input label="Phone" value={addressForm.phone} onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })} required />
-          </div>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={addressForm.isDefault}
-              onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
-            />
-            Set as default address
-          </label>
-          <Button type="submit" loading={saving} className="w-full">Save Address</Button>
-        </form>
-      </Modal>
     </div>
   );
 }
