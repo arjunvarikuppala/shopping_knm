@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.post('/register', authLimiter, validate(registerValidation), authController.register);
+router.post('/send-otp', authLimiter, validate(registerValidation), authController.sendOtp);
 router.post('/login', authLimiter, validate(loginValidation), authController.login);
 router.post('/google', authLimiter, authController.googleLogin);
 router.post('/verify-otp', authLimiter, authController.verifyOtp);

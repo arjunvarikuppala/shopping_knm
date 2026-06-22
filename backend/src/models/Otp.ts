@@ -18,7 +18,7 @@ const otpSchema = new Schema<IOtp>({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 900, // Document will be automatically deleted after 15 minutes (900 seconds)
+    expires: 300, // Document will be automatically deleted after 5 minutes (300 seconds)
   },
 });
 

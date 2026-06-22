@@ -50,14 +50,14 @@ export const googleLogin = createAsyncThunk(
   },
 );
 
-export const register = createAsyncThunk(
-  'auth/register',
+export const sendOtp = createAsyncThunk(
+  'auth/sendOtp',
   async (
     credentials: { name: string; email: string; password: string },
     { rejectWithValue },
   ) => {
     try {
-      const { data } = await authApi.register(credentials);
+      const { data } = await authApi.sendOtp(credentials);
       return data.data!; // { message, requiresOtp, email }
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -144,15 +144,15 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(register.pending, (state) => {
+      .addCase(sendOtp.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state) => {
+      .addCase(sendOtp.fulfilled, (state) => {
         state.loading = false;
         // User is not authenticated until OTP is verified
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(sendOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

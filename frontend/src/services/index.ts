@@ -2,8 +2,8 @@ import api from './api';
 import type { ApiResponse, User, AuthTokens } from '@/types';
 
 export const authApi = {
-  register: (data: { name: string; email: string; password: string }) =>
-    api.post<ApiResponse<{ message: string; requiresOtp: boolean; email: string }>>('/auth/register', data),
+  sendOtp: (data: { name: string; email: string; password: string }) =>
+    api.post<ApiResponse<{ message: string; requiresOtp: boolean; email: string }>>('/auth/send-otp', data),
 
   verifyOtp: (data: { name: string; email: string; password: string; otp: string }) =>
     api.post<ApiResponse<{ user: User; tokens: AuthTokens }>>('/auth/verify-otp', data),

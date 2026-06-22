@@ -3,10 +3,10 @@ import { authService } from '../services';
 import { sendSuccess, sendCreated } from '../utils/response';
 
 export class AuthController {
-  register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  sendOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { name, email, mobile, password } = req.body;
-      const result = await authService.register(name, email, mobile, password);
+      const result = await authService.sendOtp(name, email, mobile, password);
       sendSuccess(res, result, 'Verification OTP sent');
     } catch (error) {
       next(error);

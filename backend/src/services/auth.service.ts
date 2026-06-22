@@ -21,7 +21,7 @@ import { config } from '../config';
 const client = new OAuth2Client(config.google.clientId);
 
 export class AuthService {
-  async register(name: string, email: string, mobile: string | undefined, password: string) {
+  async sendOtp(name: string, email: string, mobile: string | undefined, password: string) {
     const query: any = [{ email }];
     if (mobile) query.push({ mobile });
 

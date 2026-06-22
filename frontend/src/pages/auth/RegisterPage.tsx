@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
-import { register, clearError, verifyOtp, resendOtp, googleLogin } from '@/features/auth/authSlice';
+import { sendOtp, clearError, googleLogin } from '@/features/auth/authSlice';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { GoogleLogin } from '@react-oauth/google';
@@ -12,8 +12,6 @@ export default function RegisterPage() {
   const { loading, error } = useAppSelector((state) => state.auth);
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [step, setStep] = useState<'details' | 'otp'>('details');
-  const [otp, setOtp] = useState('');
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -36,35 +34,13 @@ export default function RegisterPage() {
     if (!validate()) return;
 
     const result = await dispatch(
-      register({ name: form.name, email: form.email, password: form.password }),
+      sendOtp({ name: form.name, email: form.email, password: form.password }),
     );
-    if (register.fulfilled.match(result)) {
-      setStep('otp');
+    if (sendOtp.fulfilled.match(result)) {
+      navigate('/verify-email', { 
+        state: { name: form.name, email: form.email, password: form.password } 
+      });
     }
-  };
-
-  const handleVerifyOtp = async (e: FormEvent) => {
-    e.preventDefault();
-    dispatch(clearError());
-    if (!otp.trim() || otp.length !== 6) {
-      setErrors({ otp: 'Please enter a valid 6-digit OTP' });
-      return;
-    }
-
-    const result = await dispatch(verifyOtp({ 
-      name: form.name, 
-      email: form.email, 
-      password: form.password, 
-      otp 
-    }));
-    if (verifyOtp.fulfilled.match(result)) {
-      navigate('/');
-    }
-  };
-
-  const handleResendOtp = async () => {
-    await dispatch(resendOtp(form.email));
-    alert('A new OTP has been sent to your email.');
   };
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
@@ -80,107 +56,74 @@ export default function RegisterPage() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">{step === 'details' ? 'Create Account' : 'Verify Email'}</h1>
-          <p className="mt-2 text-muted">
-            {step === 'details' ? 'Join Kalanikethan (KNM) today' : `Enter the OTP sent to ${form.email}`}
-          </p>
+          <h1 className="text-3xl font-bold">Create Account</h1>
+          <p className="mt-2 text-muted">Join Kalanikethan (KNM) today</p>
         </div>
 
-        {step === 'details' ? (
-          <form onSubmit={handleSubmit} className="card space-y-4 p-6">
-            {error && (
-              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
-            )}
-            <Input
-              label="Full Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              error={errors.name}
-              placeholder="John Doe"
-            />
-            <Input
-              label="Email"
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              error={errors.email}
-              placeholder="you@example.com"
-            />
-            <Input
-              label="Password"
-              type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              error={errors.password}
-              placeholder="••••••••"
-            />
-            <Input
-              label="Confirm Password"
-              type="password"
-              value={form.confirmPassword}
-              onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-              error={errors.confirmPassword}
-              placeholder="••••••••"
-            />
-            <Button type="submit" loading={loading} className="w-full">
-              Continue
-            </Button>
-            
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
-              </div>
+        <form onSubmit={handleSubmit} className="card space-y-4 p-6">
+          {error && (
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
+          )}
+          <Input
+            label="Full Name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            error={errors.name}
+            placeholder="John Doe"
+          />
+          <Input
+            label="Email"
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            error={errors.email}
+            placeholder="you@example.com"
+          />
+          <Input
+            label="Password"
+            type="password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            error={errors.password}
+            placeholder="••••••••"
+          />
+          <Input
+            label="Confirm Password"
+            type="password"
+            value={form.confirmPassword}
+            onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+            error={errors.confirmPassword}
+            placeholder="••••••••"
+          />
+          <Button type="submit" loading={loading} className="w-full">
+            Continue
+          </Button>
+          
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
             </div>
-            
-            <div className="flex justify-center">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => {
-                  console.log('Login Failed');
-                }}
-              />
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-gray-500">Or continue with</span>
             </div>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} className="card space-y-4 p-6">
-            {error && (
-              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
-            )}
-            <Input
-              label="One-Time Password (OTP)"
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              error={errors.otp}
-              placeholder="123456"
-              maxLength={6}
+          </div>
+          
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                console.log('Login Failed');
+              }}
             />
-            <Button type="submit" loading={loading} className="w-full">
-              Verify & Create Account
-            </Button>
-            <div className="mt-4 text-center">
-              <button 
-                type="button" 
-                onClick={handleResendOtp}
-                className="text-sm font-medium text-accent hover:underline"
-              >
-                Resend OTP
-              </button>
-            </div>
-          </form>
-        )}
+          </div>
+        </form>
 
-        {step === 'details' && (
-          <p className="mt-6 text-center text-sm text-muted">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-accent hover:underline">
-              Sign in
-            </Link>
-          </p>
-        )}
+        <p className="mt-6 text-center text-sm text-muted">
+          Already have an account?{' '}
+          <Link to="/login" className="font-medium text-accent hover:underline">
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );
