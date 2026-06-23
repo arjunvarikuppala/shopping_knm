@@ -140,24 +140,48 @@ export default function AddProductPage() {
             <label className="block text-sm font-bold text-[#2C1810] uppercase tracking-wider">Product Images</label>
             <p className="text-xs text-gray-500 mb-2">Upload multiple images. The first image will be the main thumbnail.</p>
             
+            <div 
+              onDragOver={(e) => e.preventDefault()} 
+              onDrop={(e) => {
+                e.preventDefault();
+                if (e.dataTransfer.files) {
+                  const files = Array.from(e.dataTransfer.files);
+                  setImageFiles((prev) => [...prev, ...files]);
+                  files.forEach((file) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setImagePreviews((prev) => [...prev, reader.result as string]);
+                    };
+                    reader.readAsDataURL(file);
+                  });
+                }
+              }}
+              className="border-2 border-dashed border-[#D4AF37] rounded-xl p-8 text-center bg-white hover:bg-[#F8F4E8]/50 transition-colors cursor-pointer"
+              onClick={() => document.getElementById('fileUpload')?.click()}
+            >
+              <div className="text-4xl mb-3">📸</div>
+              <p className="text-sm font-bold text-[#2C1810]">Click or drag images here to upload</p>
+              <p className="text-xs text-gray-500 mt-1">Supports JPG, PNG, WEBP</p>
+              <input 
+                id="fileUpload"
+                type="file" 
+                multiple 
+                accept="image/*" 
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+
             {imagePreviews.length > 0 && (
-              <div className="flex gap-4 flex-wrap mb-4">
+              <div className="flex gap-4 flex-wrap mt-4">
                 {imagePreviews.map((url, i) => (
                   <div key={i} className="relative group">
                     <img src={url} alt={`Preview ${i}`} className="h-24 w-24 object-cover rounded-lg border-2 border-[#D4AF37] shadow-sm" />
-                    <button type="button" onClick={() => removeImage(i)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors shadow-md opacity-0 group-hover:opacity-100">×</button>
+                    <button type="button" onClick={() => removeImage(i)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors shadow-md md:opacity-0 group-hover:opacity-100">×</button>
                   </div>
                 ))}
               </div>
             )}
-            
-            <input 
-              type="file" 
-              multiple 
-              accept="image/*" 
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-widest file:bg-[#7A0019] file:text-white hover:file:bg-[#5A0012] file:cursor-pointer transition-colors"
-            />
             {errors.images && <p className="text-xs text-red-500 font-semibold">{errors.images}</p>}
           </div>
 
@@ -173,8 +197,8 @@ export default function AddProductPage() {
             </label>
           </div>
 
-          <div className="pt-4 border-t border-[#E5DCC5]/40 flex justify-end">
-            <Button type="submit" loading={saving} className="bg-[#D4AF37] hover:bg-[#C5A017] text-white px-8 py-3 text-sm rounded-full shadow-lg">
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-[#E5DCC5] z-40 md:static md:bg-transparent md:border-0 md:p-0 md:flex md:justify-end pb-safe">
+            <Button type="submit" loading={saving} className="w-full md:w-auto bg-[#D4AF37] hover:bg-[#C5A017] text-white px-8 py-3 text-sm rounded-full shadow-lg">
               Save Product
             </Button>
           </div>

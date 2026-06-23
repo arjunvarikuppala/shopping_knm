@@ -135,7 +135,7 @@ export default function HomePage() {
     <div className="bg-[#FFF8E7] overflow-hidden min-h-screen">
       
       {/* 1. Hero Section */}
-      <section className="relative h-[85vh] min-h-[550px] bg-[#2C1810] text-white flex items-center">
+      <section className="relative min-h-[85vh] md:h-[85vh] md:min-h-[550px] py-20 bg-[#2C1810] text-white flex items-center">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 mix-blend-overlay"
           style={{
@@ -150,19 +150,19 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="max-w-2xl text-left space-y-6"
+            className="max-w-2xl text-left space-y-6 pt-10 md:pt-0"
           >
-            <span className="text-sm font-bold uppercase tracking-[0.3em] text-[#D4AF37] block">
+            <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-[#D4AF37] block">
               Luxury Handloom Showroom
             </span>
-            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold leading-none text-white">
-              Kalanikethan <span className="text-[#D4AF37]">(KNM)</span>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold leading-tight text-white">
+              Kalanikethan <span className="text-[#D4AF37] block sm:inline">(KNM)</span>
             </h1>
-            <p className="font-display text-2xl md:text-3xl text-[#FFF8E7]/90 font-light tracking-wide italic">
+            <p className="font-display text-xl md:text-3xl text-[#FFF8E7]/90 font-light tracking-wide italic">
               Premium Saree Collections
             </p>
-            <div className="h-[2px] w-24 bg-[#D4AF37] my-4" />
-            <p className="text-base md:text-lg text-[#FFF8E7]/70 font-light max-w-lg leading-relaxed">
+            <div className="h-[2px] w-16 md:w-24 bg-[#D4AF37] my-4" />
+            <p className="text-sm md:text-lg text-[#FFF8E7]/70 font-light max-w-lg leading-relaxed">
               Elegance in Every Drape. Discover pure handloomed silks, lightweight linens, and majestic bridal wear directly from traditional weavers.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
@@ -182,9 +182,9 @@ export default function HomePage() {
       </section>
 
       {/* 2. New Arrivals */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Just Off The Loom
             </span>
@@ -194,7 +194,7 @@ export default function HomePage() {
             <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
           <ProductGrid products={newArrivals} loading={loading} />
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/products?sort=newest">
               <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
                 View All New Arrivals
@@ -205,9 +205,9 @@ export default function HomePage() {
       </section>
 
       {/* 3. Trending Collections */}
-      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+      <section className="py-12 md:py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Customer Favorites
             </span>
@@ -221,7 +221,7 @@ export default function HomePage() {
       </section>
 
       {/* Promo Middle Banner */}
-      <section className="py-24 relative bg-[#2C1810] text-center text-white">
+      <section className="py-16 md:py-24 relative bg-[#2C1810] text-center text-white">
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-overlay"
           style={{
@@ -233,10 +233,10 @@ export default function HomePage() {
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37]">
             Festive Special
           </span>
-          <h3 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
+          <h3 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight">
             The Royal Weave Collection
           </h3>
-          <p className="text-base text-[#FFF8E7]/70 font-light max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-[#FFF8E7]/70 font-light max-w-xl mx-auto leading-relaxed">
             Embrace the cultural grandeur of pure silk. Handcrafted by master weavers with generational expertise.
           </p>
           <div className="pt-4">
@@ -250,9 +250,9 @@ export default function HomePage() {
       </section>
 
       {/* 4. Silk Sarees */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Lustrous & Imperial
             </span>
@@ -262,7 +262,7 @@ export default function HomePage() {
             <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
           <ProductGrid products={silkSarees} loading={loading} />
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/products?fabric=silk">
               <button className="px-7 py-3 bg-[#800020] text-white hover:bg-[#A52A2A] transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
                 View Silk Collection
@@ -273,9 +273,9 @@ export default function HomePage() {
       </section>
 
       {/* 5. Cotton & Linen Sarees */}
-      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+      <section className="py-12 md:py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Elegant & Breathable
             </span>
@@ -285,7 +285,7 @@ export default function HomePage() {
             <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
           <ProductGrid products={cottonSarees} loading={loading} />
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/products?fabric=cotton">
               <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
                 View Cottons & Linens
@@ -296,9 +296,9 @@ export default function HomePage() {
       </section>
 
       {/* 6. Wedding Collections */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               The Bridal Edit
             </span>
@@ -308,7 +308,7 @@ export default function HomePage() {
             <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
           <ProductGrid products={weddingCollections} loading={loading} />
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/products?occasion=wedding">
               <button className="px-7 py-3 bg-[#800020] text-white hover:bg-[#A52A2A] transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
                 Explore Bridal Showroom
@@ -319,9 +319,9 @@ export default function HomePage() {
       </section>
 
       {/* 7. Party Wear Collections */}
-      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+      <section className="py-12 md:py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Cocktail & Festivity
             </span>
@@ -331,7 +331,7 @@ export default function HomePage() {
             <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
           <ProductGrid products={partyWearCollections} loading={loading} />
-          <div className="text-center mt-12">
+          <div className="text-center mt-10 md:mt-12">
             <Link to="/products?occasion=party-wear">
               <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
                 View Party Wear
@@ -342,7 +342,7 @@ export default function HomePage() {
       </section>
 
       {/* 8. Why Choose Kalanikethan KNM */}
-      <section className="py-20 bg-white border-t border-[#E5DCC5]/30" id="about">
+      <section className="py-12 md:py-20 bg-white border-t border-[#E5DCC5]/30" id="about">
         <div className="container-app">
           <div className="text-center mb-16">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
@@ -389,9 +389,9 @@ export default function HomePage() {
       </section>
 
       {/* 9. Customer Reviews */}
-      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+      <section className="py-12 md:py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
         <div className="container-app">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
               Testimonials
             </span>
@@ -402,11 +402,11 @@ export default function HomePage() {
           </div>
 
           {/* Horizontal Scrolling Reviews Wrapper */}
-          <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-[#D4AF37] scrollbar-track-[#FFF8E7]">
+          <div className="flex gap-4 md:gap-6 overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-[#D4AF37] scrollbar-track-[#FFF8E7] snap-x snap-mandatory w-full px-4 md:px-0">
             {displayReviews.map((rev) => (
               <div
                 key={rev.id}
-                className="flex-shrink-0 w-80 bg-white border border-[#E5DCC5]/40 p-6 rounded-2xl shadow-xs space-y-4 flex flex-col justify-between"
+                className="flex-shrink-0 w-[85vw] max-w-[320px] snap-center bg-white border border-[#E5DCC5]/40 p-6 rounded-2xl shadow-xs space-y-4 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">

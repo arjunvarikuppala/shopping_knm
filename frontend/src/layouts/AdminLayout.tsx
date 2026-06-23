@@ -2,6 +2,8 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import { logout } from '@/features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', end: true },
@@ -16,6 +18,7 @@ export default function AdminLayout() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -23,9 +26,54 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8F4E8]">
-      <aside className="fixed inset-y-0 left-0 z-30 w-64 bg-[#7A0019] text-white flex flex-col shadow-2xl">
-        <div className="flex flex-col items-center pt-8 pb-6 border-b border-[#900020]/50 relative">
+    <div className="flex min-h-screen bg-[#F8F4E8] flex-col lg:flex-row">
+      {/* Top App Bar for Mobile */}
+      <div className="lg:hidden flex items-center justify-between p-4 bg-[#7A0019] text-white shadow-md z-30 sticky top-0">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EFE9D8] text-[#7A0019] font-bold italic">
+            K
+          </div>
+          <span className="font-display font-bold uppercase tracking-widest text-sm">
+            Kalanikethan
+          </span>
+        </div>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 text-white hover:bg-[#5A0012] rounded-md"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Overlay Background */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMobileOpen(false)}
+            className="fixed inset-0 bg-black z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Left Sidebar */}
+      <aside 
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#7A0019] text-white flex flex-col shadow-2xl transition-transform duration-300 transform lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+        <div className="flex items-center justify-between lg:hidden p-4 border-b border-[#900020]/50">
+          <span className="font-display font-bold uppercase tracking-widest">Admin Menu</span>
+          <button onClick={() => setMobileOpen(false)} className="p-1">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="hidden lg:flex flex-col items-center pt-8 pb-6 border-b border-[#900020]/50 relative">
           <span className="absolute top-2 right-2 bg-[#D4AF37] text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full shadow-sm">
             Administrator
           </span>
@@ -55,6 +103,7 @@ export default function AdminLayout() {
               key={item.label}
               to={item.to}
               end={item.end}
+              onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 `block rounded-lg px-4 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
                   isActive ? 'bg-[#D4AF37] text-white shadow-md' : 'text-gray-300 hover:bg-[#900020] hover:text-white'
@@ -75,8 +124,10 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
-      <main className="ml-64 flex-1 flex flex-col relative">
-        <div className="absolute top-6 right-8 z-10">
+
+      {/* Main Content */}
+      <main className="lg:ml-64 flex-1 flex flex-col relative w-full overflow-x-hidden">
+        <div className="hidden lg:block absolute top-6 right-8 z-10">
           <button 
             onClick={() => navigate('/')} 
             className="flex items-center gap-2 bg-[#7A0019] text-white px-5 py-2.5 rounded-[12px] text-xs font-bold uppercase tracking-widest hover:text-[#D4AF37] transition-colors shadow-sm"
@@ -84,7 +135,7 @@ export default function AdminLayout() {
             🏠 Back to Store
           </button>
         </div>
-        <div className="p-8 pt-16 mt-4">
+        <div className="p-4 lg:p-8 lg:pt-16 lg:mt-4 w-full">
           <Outlet />
         </div>
       </main>

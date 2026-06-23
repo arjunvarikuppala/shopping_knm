@@ -139,7 +139,8 @@ export default function AdminProductsPage() {
         <Link to="/admin/products/new" className="inline-flex items-center justify-center rounded-full bg-[#7A0019] px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-[#5A0012] shadow-md">Add Product</Link>
       </div>
 
-      <div className="card overflow-x-auto">
+      {/* Desktop Table View */}
+      <div className="hidden md:block card overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-muted">
@@ -151,27 +152,90 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product._id} className="border-b last:border-0">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <img src={product.images[0]} alt="" className="h-10 w-10 rounded object-cover" />
-                    <span className="font-medium">{product.title}</span>
-                  </div>
-                </td>
-                <td className="p-4">{formatPrice(product.price)}</td>
-                <td className="p-4">{product.stock}</td>
-                <td className="p-4">{product.isFeatured ? '✓' : '—'}</td>
-                <td className="p-4">
-                  <div className="flex gap-2">
-                    <button onClick={() => openEdit(product)} className="text-accent hover:underline">Edit</button>
-                    <button onClick={() => handleDelete(product._id)} className="text-red-500 hover:underline">Delete</button>
+            {!products || products.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-muted">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="text-4xl mb-4">🛍️</div>
+                    <p className="text-lg font-medium">No products found.</p>
                   </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              products.map((product) => (
+                <tr key={product._id} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <img src={product.images[0]} alt="" className="h-10 w-10 rounded object-cover border border-gray-200" />
+                      <span className="font-medium text-[#2C1810]">{product.title}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 font-medium text-[#7A0019]">{formatPrice(product.price)}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${product.stock > 10 ? 'bg-green-100 text-green-800' : product.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                      {product.stock} in stock
+                    </span>
+                  </td>
+                  <td className="p-4">{product.isFeatured ? '⭐ Yes' : '—'}</td>
+                  <td className="p-4">
+                    <div className="flex gap-3">
+                      <button onClick={() => openEdit(product)} className="text-[#D4AF37] hover:text-[#C5A017] font-bold uppercase tracking-wider text-[11px]">Edit</button>
+                      <button onClick={() => handleDelete(product._id)} className="text-red-600 hover:text-red-700 font-bold uppercase tracking-wider text-[11px]">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {!products || products.length === 0 ? (
+          <div className="card p-8 text-center text-muted">
+            <div className="flex flex-col items-center justify-center">
+              <div className="text-4xl mb-4">🛍️</div>
+              <p className="text-lg font-medium">No products found.</p>
+            </div>
+          </div>
+        ) : (
+          products.map((product) => (
+            <div key={product._id} className="card p-4 flex flex-col gap-3">
+              <div className="flex items-start gap-4">
+                <img src={product.images[0]} alt="" className="h-20 w-20 rounded-lg object-cover border border-[#E5DCC5] shadow-sm shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-bold text-[#2C1810] leading-tight mb-1 line-clamp-2">{product.title}</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-bold text-[#7A0019] text-sm">{formatPrice(product.price)}</span>
+                    {product.isFeatured && (
+                      <span className="bg-[#D4AF37]/10 text-[#D4AF37] text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${product.stock > 10 ? 'bg-green-100 text-green-800' : product.stock > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                    {product.stock} in stock
+                  </span>
+                </div>
+              </div>
+              <div className="pt-3 border-t border-[#E5DCC5]/40 flex gap-3">
+                <button 
+                  onClick={() => openEdit(product)} 
+                  className="flex-1 py-2 bg-[#F8F4E8] text-[#2C1810] border border-[#E5DCC5] rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-[#EFE9D8] transition-colors shadow-sm"
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => handleDelete(product._id)} 
+                  className="flex-1 py-2 bg-white border-2 border-red-100 text-red-600 rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-red-50 transition-colors shadow-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? 'Edit Product' : 'Add Product'}>

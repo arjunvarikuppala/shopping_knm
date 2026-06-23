@@ -100,11 +100,21 @@ export default function Header() {
         </nav>
 
         {/* Right Section: Action Buttons */}
-        <div className="flex items-center gap-[24px] shrink-0">
+        <div className="flex items-center gap-4 md:gap-[24px] shrink-0">
+          {/* Search */}
+          <button
+            className="relative text-[#2C1810] hover:text-[#7A0019] transition-colors duration-200 flex items-center"
+            aria-label="Search"
+          >
+            <svg className="h-[24px] w-[24px] md:h-[26px] md:w-[26px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
           {/* Wishlist */}
           <Link
             to="/wishlist"
-            className="relative text-[#2C1810] hover:text-[#7A0019] transition-colors duration-200 flex items-center"
+            className="hidden md:flex relative text-[#2C1810] hover:text-[#7A0019] transition-colors duration-200 items-center"
             aria-label="Wishlist"
           >
             <svg className="h-[26px] w-[26px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +130,7 @@ export default function Header() {
           {/* Cart */}
           <Link
             to="/cart"
-            className="relative text-[#2C1810] hover:text-[#7A0019] transition-colors duration-200 flex items-center"
+            className="hidden md:flex relative text-[#2C1810] hover:text-[#7A0019] transition-colors duration-200 items-center"
             aria-label="Cart"
           >
             <svg className="h-[26px] w-[26px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">

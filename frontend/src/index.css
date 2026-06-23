@@ -15,8 +15,8 @@
 }
 
 @layer base {
-  body {
-    @apply font-sans text-[#2C1810] bg-[#F8F4E8] antialiased selection:bg-[#D4AF37] selection:text-white;
+  html, body {
+    @apply font-sans text-[#2C1810] bg-[#F8F4E8] antialiased selection:bg-[#D4AF37] selection:text-white overflow-x-hidden w-full;
   }
 
   h1, h2, h3, h4, h5, h6 {

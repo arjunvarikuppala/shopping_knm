@@ -73,13 +73,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Wishlist Button Overlay */}
         <button
           onClick={handleWishlistToggle}
-          className="absolute right-3.5 top-3.5 flex h-9.5 w-9.5 items-center justify-center rounded-full bg-white/90 backdrop-blur-xs text-[#800020] shadow-md border border-[#E5DCC5]/30 hover:scale-110 transition-transform active:scale-95 duration-200 cursor-pointer z-10"
+          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 backdrop-blur-xs text-[#800020] shadow-md border border-[#E5DCC5]/30 hover:scale-110 transition-transform active:scale-95 duration-200 cursor-pointer z-10"
           aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           {isInWishlist ? (
-            <FaHeart className="h-4.5 w-4.5 text-[#800020] fill-[#800020]" />
+            <FaHeart className="h-5 w-5 text-[#800020] fill-[#800020]" />
           ) : (
-            <FaRegHeart className="h-4.5 w-4.5 text-[#800020]" />
+            <FaRegHeart className="h-5 w-5 text-[#800020]" />
           )}
         </button>
 
@@ -105,7 +105,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {categoryName}
           </span>
         )}
-        <h3 className="font-display text-base font-bold text-[#2C1810] line-clamp-2 leading-snug group-hover:text-[#800020] transition-colors mb-2">
+        <h3 className="font-display text-base font-bold text-[#2C1810] line-clamp-2 min-h-[2.8rem] leading-snug group-hover:text-[#800020] transition-colors mb-2">
           {product.title}
         </h3>
 
@@ -139,7 +139,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             disabled={product.stock <= 0}
-            className="px-4 py-2 bg-[#800020] border border-[#800020] text-white hover:bg-white hover:text-[#800020] disabled:bg-gray-100 disabled:border-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-display text-xs uppercase tracking-wider font-bold shadow-xs cursor-pointer"
+            className="px-4 py-3 min-h-[44px] bg-[#800020] border border-[#800020] text-white hover:bg-white hover:text-[#800020] disabled:bg-gray-100 disabled:border-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-display text-xs uppercase tracking-wider font-bold shadow-xs cursor-pointer"
           >
             Add To Cart
           </button>
