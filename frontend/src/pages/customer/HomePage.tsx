@@ -5,133 +5,374 @@ import { Product } from '@/types';
 import ProductGrid from '@/components/product/ProductGrid';
 import TrustSection from '@/components/ui/TrustSection';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import { motion } from 'framer-motion';
+import { FaQuoteLeft, FaStar } from 'react-icons/fa';
 
 export default function HomePage() {
-  const [featured, setFeatured] = useState<Product[]>([]);
-  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllProducts = async () => {
       try {
-        const [featuredRes, newRes] = await Promise.all([
-          productApi.getFeatured(),
-          productApi.getNewArrivals(),
-        ]);
-        setFeatured(featuredRes.data.data as Product[]);
-        setNewArrivals(newRes.data.data as Product[]);
+        setLoading(true);
+        const res = await productApi.getAll({ limit: 100 });
+        setProducts(res.data.data as Product[]);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+    fetchAllProducts();
   }, []);
 
+  // Filter products locally for home sections
+  const newArrivals = products.slice(0, 4);
+  const trendingCollections = products.filter((p) => p.isFeatured).slice(0, 4);
+  const silkSarees = products.filter((p) => p.fabric === 'Silk').slice(0, 4);
+  const cottonSarees = products.filter((p) => p.fabric === 'Cotton' || p.fabric === 'Linen').slice(0, 4);
+  const weddingCollections = products.filter((p) => p.occasion === 'Wedding').slice(0, 4);
+  const partyWearCollections = products.filter((p) => p.occasion === 'Party Wear').slice(0, 4);
+
+  const reviews = [
+    {
+      name: 'Ananya Sharma',
+      role: 'Bride',
+      img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80',
+      rating: 5,
+      text: 'The crimson Kanjivaram was absolutely breathtaking! The gold zari work is pure and heavy, just like heirloom collections. Exceeded all my expectations for my wedding day.',
+    },
+    {
+      name: 'Priya Nair',
+      role: 'Fashion Blogger',
+      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80',
+      rating: 5,
+      text: 'Beautiful linen saree from Kalanikethan! Incredibly breathable for summers yet looks extremely formal with the zari borders. Love the craftsmanship.',
+    },
+    {
+      name: 'Meenakshi Iyer',
+      role: 'Regular Customer',
+      img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&h=150&q=80',
+      rating: 5,
+      text: 'I bought the Patola Silk saree for a family festival. The quality of the silk is rich, colors are vibrant, and the look is completely regal. Highly recommended!',
+    },
+    {
+      name: 'Deepa Reddy',
+      role: 'Software Engineer',
+      img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&h=150&q=80',
+      rating: 4.9,
+      text: 'Extremely prompt delivery and secure packaging. The georgette mirror work saree has a perfect fall. Will definitely purchase more sarees from here.',
+    },
+  ];
+
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="relative bg-[#2C1810] text-white">
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 mix-blend-overlay"
-          style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1610030469983-98e550d6193c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")' }}
+    <div className="bg-[#FFF8E7] overflow-hidden min-h-screen">
+      
+      {/* 1. Hero Section */}
+      <section className="relative h-[85vh] min-h-[550px] bg-[#2C1810] text-white flex items-center">
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 mix-blend-overlay"
+          style={{
+            backgroundImage:
+              'url("https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1920&q=80")',
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2C1810] via-transparent to-transparent z-0" />
-        <div className="container-app relative z-10 flex min-h-[600px] flex-col items-center justify-center py-24 text-center md:min-h-[700px]">
-          <h1 className="font-display text-5xl font-bold leading-tight md:text-7xl text-[#D4AF37] drop-shadow-lg">
-            Kalanikethan <span className="text-3xl">(KNM)</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-xl text-[#FFFFF0] font-light tracking-wide drop-shadow-md">
-            Timeless Elegance in Every Drape
-          </p>
-          <div className="mt-10">
-            <Link to="/products">
-              <button className="px-8 py-4 bg-[#800000] text-white font-medium tracking-wider hover:bg-[#A52A2A] transition-colors border border-[#800000] shadow-lg">
-                Explore Collection
-              </button>
-            </Link>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#2C1810]/90 via-[#2C1810]/50 to-transparent z-0" />
+        
+        <div className="container-app relative z-10 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="max-w-2xl text-left space-y-6"
+          >
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-[#D4AF37] block">
+              Luxury Handloom Showroom
+            </span>
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold leading-none text-white">
+              Kalanikethan <span className="text-[#D4AF37]">(KNM)</span>
+            </h1>
+            <p className="font-display text-2xl md:text-3xl text-[#FFF8E7]/90 font-light tracking-wide italic">
+              Premium Saree Collections
+            </p>
+            <div className="h-[2px] w-24 bg-[#D4AF37] my-4" />
+            <p className="text-base md:text-lg text-[#FFF8E7]/70 font-light max-w-lg leading-relaxed">
+              Elegance in Every Drape. Discover pure handloomed silks, lightweight linens, and majestic bridal wear directly from traditional weavers.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link to="/products">
+                <button className="px-8 py-4 bg-[#800020] hover:bg-[#A52A2A] text-white text-xs uppercase tracking-widest font-bold border border-[#800020] hover:border-[#D4AF37] transition-all shadow-lg cursor-pointer">
+                  Shop Now
+                </button>
+              </Link>
+              <Link to="/products?featured=true">
+                <button className="px-8 py-4 bg-transparent hover:bg-white/10 text-white text-xs uppercase tracking-widest font-bold border border-white hover:border-[#D4AF37] transition-all shadow-lg cursor-pointer">
+                  Explore Collections
+                </button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container-app py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-display font-bold text-[#800000]">Curated Collections</h2>
-          <div className="mx-auto mt-4 h-1 w-24 bg-[#D4AF37]"></div>
-        </div>
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-          {[
-            { name: 'Kanjivaram Sarees', img: 'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Banarasi Sarees', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Silk Sarees', img: 'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Cotton Sarees', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Organza Sarees', img: 'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Party Wear Sarees', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Bridal Collection', img: 'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=400&q=80' },
-            { name: 'Festival Collection', img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80' },
-          ].map((cat, idx) => (
-            <Link
-              key={idx}
-              to={`/products?category=${cat.name.toLowerCase().replace(' ', '-')}`}
-              className="group relative h-80 overflow-hidden bg-[#2C1810] shadow-sm transition-all hover:shadow-xl"
-            >
-              <img 
-                src={cat.img} 
-                alt={cat.name} 
-                className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-60"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#2C1810]/90 to-transparent" />
-              <div className="absolute bottom-0 w-full p-6 text-center">
-                <h3 className="font-display text-xl font-bold text-[#FFFFF0] group-hover:text-[#D4AF37] transition-colors">{cat.name}</h3>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="bg-[#FFFFF0] py-20">
+      {/* 2. New Arrivals */}
+      <section className="py-20 bg-white">
         <div className="container-app">
-          <div className="mb-10 flex items-center justify-between border-b border-[#E5DCC5] pb-4">
-            <h2 className="font-display text-3xl font-bold text-[#800000]">Signature Collection</h2>
-            <Link to="/products?featured=true" className="text-sm font-medium tracking-wide text-[#800000] hover:text-[#D4AF37]">
-              View All Collection →
-            </Link>
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Just Off The Loom
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              New Arrivals
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
           </div>
-          <ProductGrid products={featured} loading={loading} />
-        </div>
-      </section>
-
-      {/* Promotions Banner */}
-      <section className="container-app py-16">
-        <div className="overflow-hidden rounded-none border border-[#D4AF37] bg-[#FFFFF0] p-8 text-center md:p-16 relative">
-          <div className="absolute inset-0 bg-[#800000]/5" />
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#800000]">Exclusive Offer</p>
-            <h2 className="mt-4 font-display text-4xl font-bold md:text-5xl text-[#2C1810]">Festive Elegance Sale</h2>
-            <p className="mt-4 text-[#8C7B75] text-lg">Embrace the season with up to 40% off on our handwoven masterpieces.</p>
-            <Link to="/products" className="mt-8 inline-block">
-              <button className="px-8 py-3 bg-transparent border-2 border-[#800000] text-[#800000] font-medium tracking-wider hover:bg-[#800000] hover:text-white transition-colors">
-                Discover the Collection
+          <ProductGrid products={newArrivals} loading={loading} />
+          <div className="text-center mt-12">
+            <Link to="/products?sort=newest">
+              <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
+                View All New Arrivals
               </button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* New Arrivals */}
-      <section className="container-app py-16">
-        <div className="mb-10 flex items-center justify-between border-b border-[#E5DCC5] pb-4">
-          <h2 className="font-display text-3xl font-bold text-[#800000]">New Arrivals</h2>
-          <Link to="/products?sort=newest" className="text-sm font-medium tracking-wide text-[#800000] hover:text-[#D4AF37]">
-            View All Collection →
-          </Link>
+      {/* 3. Trending Collections */}
+      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Customer Favorites
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Trending Collections
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+          <ProductGrid products={trendingCollections} loading={loading} />
         </div>
-        <ProductGrid products={newArrivals} loading={loading} />
       </section>
 
+      {/* Promo Middle Banner */}
+      <section className="py-24 relative bg-[#2C1810] text-center text-white">
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-overlay"
+          style={{
+            backgroundImage:
+              'url("https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=1920&q=80")',
+          }}
+        />
+        <div className="relative z-10 max-w-3xl mx-auto px-4 space-y-6">
+          <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#D4AF37]">
+            Festive Special
+          </span>
+          <h3 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
+            The Royal Weave Collection
+          </h3>
+          <p className="text-base text-[#FFF8E7]/70 font-light max-w-xl mx-auto leading-relaxed">
+            Embrace the cultural grandeur of pure silk. Handcrafted by master weavers with generational expertise.
+          </p>
+          <div className="pt-4">
+            <Link to="/products?category=silk-sarees">
+              <button className="px-8 py-3.5 bg-[#800020] text-white hover:bg-[#A52A2A] text-xs uppercase tracking-widest font-bold border border-[#800020] hover:border-[#D4AF37] transition-all cursor-pointer shadow-lg">
+                Explore Silks
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Silk Sarees */}
+      <section className="py-20 bg-white">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Lustrous & Imperial
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Signature Silk Sarees
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+          <ProductGrid products={silkSarees} loading={loading} />
+          <div className="text-center mt-12">
+            <Link to="/products?fabric=silk">
+              <button className="px-7 py-3 bg-[#800020] text-white hover:bg-[#A52A2A] transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
+                View Silk Collection
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Cotton & Linen Sarees */}
+      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Elegant & Breathable
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Cotton & Linen Sarees
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+          <ProductGrid products={cottonSarees} loading={loading} />
+          <div className="text-center mt-12">
+            <Link to="/products?fabric=cotton">
+              <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
+                View Cottons & Linens
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Wedding Collections */}
+      <section className="py-20 bg-white">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              The Bridal Edit
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Wedding Collections
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+          <ProductGrid products={weddingCollections} loading={loading} />
+          <div className="text-center mt-12">
+            <Link to="/products?occasion=wedding">
+              <button className="px-7 py-3 bg-[#800020] text-white hover:bg-[#A52A2A] transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
+                Explore Bridal Showroom
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Party Wear Collections */}
+      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Cocktail & Festivity
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Party Wear Collections
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+          <ProductGrid products={partyWearCollections} loading={loading} />
+          <div className="text-center mt-12">
+            <Link to="/products?occasion=party-wear">
+              <button className="px-7 py-3 bg-transparent border-2 border-[#800020] text-[#800020] hover:bg-[#800020] hover:text-white transition-all font-display text-xs uppercase tracking-widest font-bold cursor-pointer">
+                View Party Wear
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Why Choose Kalanikethan KNM */}
+      <section className="py-20 bg-white border-t border-[#E5DCC5]/30" id="about">
+        <div className="container-app">
+          <div className="text-center mb-16">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Our Heritage
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Why Choose Kalanikethan KNM
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 bg-[#FFF8E7]/40 border border-[#E5DCC5]/40 rounded-2xl text-center space-y-4">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#800020]/5 text-[#800020] border border-[#D4AF37]/20 font-display text-2xl font-bold">
+                1
+              </div>
+              <h3 className="font-display text-xl font-bold text-[#800020]">Handloom Heritage</h3>
+              <p className="text-sm text-[#8C7B75] leading-relaxed font-light">
+                We work directly with master weaver cooperatives in Kanchipuram, Banaras, and Bengal. Every saree helps preserve century-old Indian weaving arts.
+              </p>
+            </div>
+
+            <div className="p-8 bg-[#FFF8E7]/40 border border-[#E5DCC5]/40 rounded-2xl text-center space-y-4">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#800020]/5 text-[#800020] border border-[#D4AF37]/20 font-display text-2xl font-bold">
+                2
+              </div>
+              <h3 className="font-display text-xl font-bold text-[#800020]">Certified Fabric Purity</h3>
+              <p className="text-sm text-[#8C7B75] leading-relaxed font-light">
+                No compromises on authenticity. Our silk sarees carry official silk purity certifications, guaranteeing authentic silk threads and real metallic zari.
+              </p>
+            </div>
+
+            <div className="p-8 bg-[#FFF8E7]/40 border border-[#E5DCC5]/40 rounded-2xl text-center space-y-4">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#800020]/5 text-[#800020] border border-[#D4AF37]/20 font-display text-2xl font-bold">
+                3
+              </div>
+              <h3 className="font-display text-xl font-bold text-[#800020]">Generational Quality</h3>
+              <p className="text-sm text-[#8C7B75] leading-relaxed font-light">
+                Our sarees are designed to be heirloom masterpieces. Detailed borders, heavily-detailed pallus, and tight thread densities mean they will last for generations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Customer Reviews */}
+      <section className="py-20 bg-[#FFF8E7] border-t border-[#E5DCC5]/30">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+              Testimonials
+            </span>
+            <h2 className="mt-2 font-display text-3xl md:text-4xl font-bold text-[#800020]">
+              Customer Reviews
+            </h2>
+            <div className="mx-auto mt-3 h-[2px] w-16 bg-[#D4AF37]"></div>
+          </div>
+
+          {/* Horizontal Scrolling Reviews Wrapper */}
+          <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-[#D4AF37] scrollbar-track-[#FFF8E7]">
+            {reviews.map((rev, idx) => (
+              <div
+                key={idx}
+                className="flex-shrink-0 w-80 bg-white border border-[#E5DCC5]/40 p-6 rounded-2xl shadow-xs space-y-4 flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex text-[#D4AF37] gap-0.5 text-sm">
+                    {Array.from({ length: Math.floor(rev.rating) }).map((_, i) => (
+                      <FaStar key={i} />
+                    ))}
+                  </div>
+                  <FaQuoteLeft className="text-[#800020]/10 text-3xl" />
+                  <p className="text-sm text-[#2C1810] font-light leading-relaxed italic">
+                    "{rev.text}"
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 pt-4 border-t border-[#E5DCC5]/20">
+                  <img
+                    src={rev.img}
+                    alt={rev.name}
+                    className="h-10 w-10 rounded-full object-cover border border-[#D4AF37]/50"
+                  />
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-[#800020]">{rev.name}</h4>
+                    <span className="text-[10px] text-[#8C7B75] uppercase tracking-wider">{rev.role}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust badges and WhatsApp Support */}
       <TrustSection />
       <WhatsAppButton />
     </div>

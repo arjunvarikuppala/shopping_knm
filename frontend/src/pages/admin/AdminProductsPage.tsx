@@ -1,5 +1,6 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { productApi, categoryApi, uploadApi } from '@/services';
+import { Link } from 'react-router-dom';
 import { getErrorMessage } from '@/services/api';
 import { Product, Category } from '@/types';
 import { formatPrice } from '@/utils';
@@ -142,7 +143,7 @@ export default function AdminProductsPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Button onClick={openCreate}>Add Product</Button>
+        <Link to="/admin/products/new" className="inline-flex items-center justify-center rounded-full bg-[#7A0019] px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-[#5A0012] shadow-md">Add Product</Link>
       </div>
 
       <div className="card overflow-x-auto">

@@ -11,7 +11,14 @@ export interface IProduct extends Document {
   rating: number;
   reviewCount: number;
   isFeatured: boolean;
+  isNewArrival: boolean;
   isActive: boolean;
+  fabric?: string;
+  color?: string;
+  occasion?: string;
+  workType?: string;
+  blousePiece?: string;
+  washCare?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,9 +78,37 @@ const productSchema = new Schema<IProduct>(
       type: Boolean,
       default: false,
     },
+    isNewArrival: {
+      type: Boolean,
+      default: false,
+    },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    fabric: {
+      type: String,
+      trim: true,
+    },
+    color: {
+      type: String,
+      trim: true,
+    },
+    occasion: {
+      type: String,
+      trim: true,
+    },
+    workType: {
+      type: String,
+      trim: true,
+    },
+    blousePiece: {
+      type: String,
+      trim: true,
+    },
+    washCare: {
+      type: String,
+      trim: true,
     },
   },
   {

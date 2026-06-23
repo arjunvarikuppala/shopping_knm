@@ -15,9 +15,15 @@ async function createAdmins() {
     const deleted = await User.deleteMany({ role: UserRole.ADMIN });
     console.log(`Deleted ${deleted.deletedCount} old admin accounts.`);
 
-    // 2. Define strong passwords
-    const sanjanaPasswordStr = 'Sanjana@Admin2026!';
-    const nethaPasswordStr = 'Netha@Admin2026!';
+    // 2. Load passwords from environment variables
+    const sanjanaPasswordStr = process.env.ADMIN_PASSWORD_1;
+    const nethaPasswordStr = process.env.ADMIN_PASSWORD_2;
+    const sanjanaEmail = process.env.ADMIN_EMAIL_1;
+    const nethaEmail = process.env.ADMIN_EMAIL_2;
+
+    if (!sanjanaPasswordStr || !nethaPasswordStr || !sanjanaEmail || !nethaEmail) {
+      throw new Error('Admin credentials not fully set in environment variables');
+    }
 
     // 3. Hash passwords
     const sanjanaPassword = await hashPassword(sanjanaPasswordStr);
@@ -26,19 +32,19 @@ async function createAdmins() {
     // 4. Create new admin accounts
     const sanjana = await User.create({
       name: 'Sanjana',
-      email: 'sanjana@fashionhub.com',
+      email: sanjanaEmail,
       password: sanjanaPassword,
       role: UserRole.ADMIN,
     });
-    console.log(`Admin created: ${sanjana.email} / ${sanjanaPasswordStr}`);
+    console.log(`Admin created: ${sanjana.email}`);
 
     const netha = await User.create({
       name: 'Netha',
-      email: 'netha@fashionhub.com',
+      email: nethaEmail,
       password: nethaPassword,
       role: UserRole.ADMIN,
     });
-    console.log(`Admin created: ${netha.email} / ${nethaPasswordStr}`);
+    console.log(`Admin created: ${netha.email}`);
 
   } catch (error) {
     console.error('Error creating admins:', error);

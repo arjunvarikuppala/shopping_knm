@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
               <tr key={order._id} className="border-b last:border-0">
                 <td className="p-4 font-mono text-xs">{order._id.slice(-8)}</td>
                 <td className="p-4">
-                  {typeof order.userId === 'object' ? order.userId.name : 'N/A'}
+                  {order.userId && typeof order.userId === 'object' && 'name' in order.userId ? (order.userId as any).name : 'N/A'}
                 </td>
                 <td className="p-4">{order.products.length}</td>
                 <td className="p-4">{formatPrice(order.totalAmount)}</td>

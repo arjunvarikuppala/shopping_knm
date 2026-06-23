@@ -4,23 +4,23 @@
   --font-sans: 'Poppins', system-ui, sans-serif;
   --font-display: 'Playfair Display', serif;
   /* Premium Palette */
-  --color-primary: #800000; /* Maroon */
-  --color-primary-light: #A52A2A; 
+  --color-primary: #7A0019; /* Deep Maroon */
+  --color-primary-light: #900020; 
   --color-accent: #D4AF37; /* Gold */
   --color-accent-hover: #C5A017;
-  --color-surface: #FFFFF0; /* Ivory White */
-  --color-surface-dark: #FFFDD0; /* Cream */
+  --color-surface: #F8F4E8; /* Ivory */
+  --color-surface-dark: #EFE9D8; 
   --color-text: #2C1810; /* Dark Brown/Beige-ish for text */
   --color-muted: #8C7B75;
 }
 
 @layer base {
   body {
-    @apply font-sans text-[#2C1810] bg-[#FFFFF0] antialiased selection:bg-[#D4AF37] selection:text-white;
+    @apply font-sans text-[#2C1810] bg-[#F8F4E8] antialiased selection:bg-[#D4AF37] selection:text-white;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-wide text-[#800000];
+    @apply font-display tracking-wide text-[#7A0019];
   }
 }
 

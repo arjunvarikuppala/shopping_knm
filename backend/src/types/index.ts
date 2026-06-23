@@ -42,6 +42,9 @@ export interface ProductFilters extends PaginationQuery {
   maxPrice?: number;
   sort?: 'price_asc' | 'price_desc' | 'rating' | 'newest';
   featured?: boolean;
+  fabric?: string;
+  color?: string;
+  occasion?: string;
 }
 
 export interface ApiResponse<T = unknown> {

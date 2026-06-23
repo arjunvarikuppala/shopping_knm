@@ -64,6 +64,7 @@ export const productValidation = [
   body('category').notEmpty().withMessage('Category is required').isMongoId(),
   body('stock').isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
   body('isFeatured').optional().isBoolean(),
+  body('isNewArrival').optional().isBoolean(),
   body('isActive').optional().isBoolean(),
 ];
 

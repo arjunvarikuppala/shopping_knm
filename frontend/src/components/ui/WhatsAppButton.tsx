@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function WhatsAppButton() {
   const [isHovered, setIsHovered] = useState(false);
-  const phoneNumber = '919876543210';
-  const message = 'Hello Kalanikethan, I need help selecting a saree.';
+  const phoneNumber = '919182860602';
+  const message = 'Hello, I am interested in your saree collection.';
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex items-end justify-end">

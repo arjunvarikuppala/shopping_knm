@@ -16,6 +16,9 @@ export class ProductController {
         maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined,
         sort: req.query.sort as ProductFilters['sort'],
         featured: req.query.featured === 'true' ? true : undefined,
+        fabric: req.query.fabric as string,
+        color: req.query.color as string,
+        occasion: req.query.occasion as string,
       };
 
       const result = await productService.getProducts(filters);

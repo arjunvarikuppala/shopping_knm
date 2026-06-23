@@ -27,12 +27,19 @@ export const authenticate = async (
     const token = authHeader.split(' ')[1];
     const decoded = verifyAccessToken(token);
 
-    const user = await User.findById(decoded.userId).select('isBlocked role');
+    const user = await User.findById(decoded.userId).select('isBlocked role email');
     if (!user) {
       throw new UnauthorizedError('User not found');
     }
     if (user.isBlocked) {
       throw new ForbiddenError('Your account has been blocked');
+    }
+
+    if (user.role === UserRole.ADMIN) {
+      const allowedEmails = [process.env.ADMIN_EMAIL_1, process.env.ADMIN_EMAIL_2];
+      if (!allowedEmails.includes(user.email)) {
+        throw new ForbiddenError('Unauthorized admin account');
+      }
     }
 
     req.user = decoded;

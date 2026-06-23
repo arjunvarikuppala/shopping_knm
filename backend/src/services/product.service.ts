@@ -15,6 +15,9 @@ export class ProductService {
       maxPrice,
       sort = 'newest',
       featured,
+      fabric,
+      color,
+      occasion,
     } = filters;
 
     const query: FilterQuery<IProduct> = { isActive: true };
@@ -38,6 +41,18 @@ export class ProductService {
 
     if (featured !== undefined) {
       query.isFeatured = featured;
+    }
+
+    if (fabric) {
+      query.fabric = new RegExp(`^${fabric}$`, 'i');
+    }
+
+    if (color) {
+      query.color = new RegExp(`^${color}$`, 'i');
+    }
+
+    if (occasion) {
+      query.occasion = new RegExp(`^${occasion}$`, 'i');
     }
 
     const sortOptions: Record<string, Record<string, 1 | -1>> = {

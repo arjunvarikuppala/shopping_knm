@@ -47,6 +47,12 @@ export interface Product {
   reviewCount: number;
   isFeatured: boolean;
   isActive: boolean;
+  fabric?: string;
+  color?: string;
+  occasion?: string;
+  workType?: string;
+  blousePiece?: string;
+  washCare?: string;
   createdAt: string;
 }
 

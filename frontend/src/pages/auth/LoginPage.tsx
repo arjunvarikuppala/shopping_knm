@@ -33,7 +33,7 @@ export default function LoginPage() {
     const result = await dispatch(login(form));
     if (login.fulfilled.match(result)) {
       const role = result.payload.role;
-      navigate(role === 'admin' ? '/admin' : from);
+      navigate(role === 'admin' ? '/admin' : '/profile');
     }
   };
 

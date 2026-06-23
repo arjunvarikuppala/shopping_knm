@@ -33,105 +33,236 @@ const seed = async () => {
   });
 
   const categories = await Category.insertMany([
-    { name: 'Silk Sarees', slug: 'silk-sarees', description: 'Premium silk sarees for special occasions' },
-    { name: 'Cotton Sarees', slug: 'cotton-sarees', description: 'Comfortable daily wear cotton sarees' },
-    { name: 'Georgette Sarees', slug: 'georgette-sarees', description: 'Lightweight and flowy georgette sarees' },
-    { name: 'Banarasi Sarees', slug: 'banarasi-sarees', description: 'Rich traditional Banarasi sarees' },
-    { name: 'Men', slug: 'men', description: 'Men\'s clothing and accessories' },
-    { name: 'Women', slug: 'women', description: 'Women\'s clothing and accessories' },
-    { name: 'Kids', slug: 'kids', description: 'Kids clothing' },
-    { name: 'Accessories', slug: 'accessories', description: 'Bags, belts, and more' },
+    { name: 'Silk Sarees', slug: 'silk-sarees', description: 'Premium handloomed silk sarees including Kanjivaram and Banarasi masterpieces.' },
+    { name: 'Cotton Sarees', slug: 'cotton-sarees', description: 'Breathable and elegant cotton sarees for daily wear and formal occasions.' },
+    { name: 'Linen Sarees', slug: 'linen-sarees', description: 'Organic linen sarees that offer comfort with contemporary design.' },
+    { name: 'Georgette Sarees', slug: 'georgette-sarees', description: 'Flowy georgette sarees with delicate embellishments and prints.' },
+    { name: 'Wedding Collection', slug: 'wedding-collection', description: 'Bridal drapes with rich zari borders and detailed hand embroidery.' },
+    { name: 'New Arrivals', slug: 'new-arrivals', description: 'The latest weaves directly from traditional Indian artisans.' }
   ]);
 
   const products = [
     {
-      title: 'Classic White T-Shirt',
-      description: 'Premium cotton classic fit t-shirt. Perfect for everyday wear.',
-      price: 29.99,
-      compareAtPrice: 39.99,
-      images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600'],
-      category: categories[0]._id,
-      stock: 100,
-      rating: 4.5,
-      reviewCount: 12,
+      title: 'Vibrant Crimson Kanjivaram Silk Saree',
+      description: 'Handwoven in Kanchipuram, this masterpiece features a brilliant crimson body with intricate gold zari brocade. The pallu showcases traditional peacock and temple motifs, capturing absolute bridal majesty. Perfect for weddings and auspicious occasions.',
+      price: 12500,
+      compareAtPrice: 16500,
+      images: [
+        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1608748010899-18f300247112?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[0]._id, // Silk
+      stock: 15,
+      rating: 4.9,
+      reviewCount: 36,
       isFeatured: true,
+      fabric: 'Silk',
+      color: 'Red',
+      occasion: 'Wedding',
+      workType: 'Pure Gold Zari Weaving',
+      blousePiece: 'Included - Unstitched Silk Blouse (80cm)',
+      washCare: 'Dry Clean Only'
     },
     {
-      title: 'Slim Fit Denim Jeans',
-      description: 'Modern slim fit jeans with stretch comfort. Dark wash finish.',
-      price: 79.99,
-      images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=600'],
-      category: categories[0]._id,
-      stock: 50,
-      rating: 4.2,
-      reviewCount: 8,
-      isFeatured: true,
-    },
-    {
-      title: 'Floral Summer Dress',
-      description: 'Lightweight floral print dress perfect for summer occasions.',
-      price: 89.99,
-      compareAtPrice: 119.99,
-      images: ['https://images.unsplash.com/photo-1595777457583-95e059ec5813?w=600'],
-      category: categories[1]._id,
-      stock: 35,
+      title: 'Imperial Royal Purple Banarasi Saree',
+      description: 'Exquisite Banarasi silk saree hand-woven using fine mulberry silk and real zari threads. It displays a majestic floral jaal pattern across the body and an ornate pallu with scalloped edges. A classic heirloom drape for grand events.',
+      price: 9800,
+      compareAtPrice: 12999,
+      images: [
+        'https://images.unsplash.com/photo-1583391265517-35bbdad01209?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1610030470298-2c58ecb17e4f?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[4]._id, // Wedding
+      stock: 8,
       rating: 4.8,
-      reviewCount: 24,
+      reviewCount: 14,
       isFeatured: true,
+      fabric: 'Silk',
+      color: 'Purple',
+      occasion: 'Wedding',
+      workType: 'Kadhwa Brocade Zari Weaving',
+      blousePiece: 'Included - Running Brocade Blouse Piece',
+      washCare: 'Dry Clean Only'
     },
     {
-      title: 'Leather Crossbody Bag',
-      description: 'Genuine leather crossbody bag with adjustable strap.',
-      price: 129.99,
-      images: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600'],
-      category: categories[3]._id,
-      stock: 25,
-      rating: 4.6,
-      reviewCount: 15,
-      isFeatured: true,
-    },
-    {
-      title: 'Kids Hoodie',
-      description: 'Cozy fleece hoodie for kids. Available in multiple colors.',
-      price: 39.99,
-      images: ['https://images.unsplash.com/photo-1519238263530-95c2a4e2d2f?w=600'],
-      category: categories[2]._id,
-      stock: 60,
-      rating: 4.3,
-      reviewCount: 6,
-    },
-    {
-      title: 'Wool Blend Coat',
-      description: 'Elegant wool blend overcoat for the colder months.',
-      price: 199.99,
-      compareAtPrice: 249.99,
-      images: ['https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600'],
-      category: categories[1]._id,
-      stock: 20,
-      rating: 4.7,
-      reviewCount: 18,
-      isFeatured: true,
-    },
-    {
-      title: 'Running Sneakers',
-      description: 'Lightweight running shoes with cushioned sole.',
-      price: 99.99,
-      images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'],
-      category: categories[0]._id,
+      title: 'Summer Sky Blue Linen Zari Saree',
+      description: 'Woven from premium organic linen, this saree features a soft sky blue hue with a glittering silver zari border. Lightweight, breathable, and incredibly stylish, it transitions smoothly from office meetings to evening socials.',
+      price: 2400,
+      compareAtPrice: 3500,
+      images: [
+        'https://images.unsplash.com/photo-1590156221122-c241e7bfcda7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[2]._id, // Linen
       stock: 45,
       rating: 4.4,
-      reviewCount: 32,
+      reviewCount: 22,
+      isFeatured: true,
+      fabric: 'Linen',
+      color: 'Blue',
+      occasion: 'Daily Wear',
+      workType: 'Zari Border with Tassels',
+      blousePiece: 'Included - Contrast Plain Linen Blouse Piece',
+      washCare: 'Gentle Hand Wash'
     },
     {
-      title: 'Silk Scarf',
-      description: 'Luxurious silk scarf with elegant pattern.',
-      price: 49.99,
-      images: ['https://images.unsplash.com/photo-1601924994987-69f26d08c32d?w=600'],
-      category: categories[3]._id,
-      stock: 40,
-      rating: 4.1,
+      title: 'Forest Green Patola Silk Saree',
+      description: 'Crafted with premium silk, this Patola style saree showcases rich geometric ikat patterns across the border and pallu. Its vibrant contrasting colors and traditional heritage design bring timeless festive vibes.',
+      price: 8500,
+      compareAtPrice: 11000,
+      images: [
+        'https://images.unsplash.com/photo-1583391733924-a7491d9d95f4?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[0]._id, // Silk
+      stock: 12,
+      rating: 4.7,
       reviewCount: 9,
+      isFeatured: true,
+      fabric: 'Silk',
+      color: 'Green',
+      occasion: 'Festive',
+      workType: 'Ikat Pattern & Gold Border',
+      blousePiece: 'Included - Raw Silk Blouse Piece',
+      washCare: 'Dry Clean Only'
     },
+    {
+      title: 'Blush Pink Sequined Georgette Saree',
+      description: 'Be the highlight of every soirée in this lightweight blush pink georgette saree. Adorned with delicate vertical sequin lines and an embroidered border, it flows beautifully to create an elegant, modern party silhouette.',
+      price: 4900,
+      compareAtPrice: 6999,
+      images: [
+        'https://images.unsplash.com/photo-1610030469915-d9124408ce90?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[3]._id, // Georgette
+      stock: 20,
+      rating: 4.6,
+      reviewCount: 18,
+      isFeatured: true,
+      fabric: 'Georgette',
+      color: 'Pink',
+      occasion: 'Party Wear',
+      workType: 'Vertical Sequins Embroidery',
+      blousePiece: 'Included - Satin Blouse Piece with Sequin Border',
+      washCare: 'Dry Clean Only'
+    },
+    {
+      title: 'Ivory Handloom Jamdani Cotton Saree',
+      description: 'Handwoven by skilled weavers using premium organic cotton, this pristine ivory saree features yellow and gold hand-loom floral motifs. A lightweight, elegant classic for warm summer days and festive mornings.',
+      price: 2900,
+      compareAtPrice: 3999,
+      images: [
+        'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1590156221122-c241e7bfcda7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[1]._id, // Cotton
+      stock: 30,
+      rating: 4.5,
+      reviewCount: 11,
+      isFeatured: false,
+      fabric: 'Cotton',
+      color: 'White',
+      occasion: 'Daily Wear',
+      workType: 'Traditional Jamdani Weaving',
+      blousePiece: 'Included - Matching Unstitched Cotton Piece',
+      washCare: 'Gentle Hand Wash / Dry Clean'
+    },
+    {
+      title: 'Sunset Orange Organza Silk Saree',
+      description: 'Graceful sunset orange organza saree featuring hand-painted floral blooms and gold-bordered edges. Semi-transparent, stiff yet flowing fabric ensures a royal and high-fashion ethnic look.',
+      price: 5200,
+      compareAtPrice: 7500,
+      images: [
+        'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1610030469915-d9124408ce90?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[5]._id, // New Arrivals (category index 5)
+      stock: 14,
+      rating: 4.8,
+      reviewCount: 25,
+      isFeatured: false,
+      fabric: 'Silk',
+      color: 'Pink',
+      occasion: 'Festive',
+      workType: 'Hand-painted Flora with Zari Gota',
+      blousePiece: 'Included - Contrasting Brocade Piece',
+      washCare: 'Dry Clean Only'
+    },
+    {
+      title: 'Midnight Blue Designer Georgette Saree',
+      description: 'Exquisite midnight blue georgette saree featuring a heavy designer border detailed with intricate mirrors, zari, and thread work. Designed for wedding receptions and grand evening cocktail parties.',
+      price: 5900,
+      compareAtPrice: 8500,
+      images: [
+        'https://images.unsplash.com/photo-1610030470298-2c58ecb17e4f?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391265517-35bbdad01209?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[3]._id, // Georgette
+      stock: 25,
+      rating: 4.7,
+      reviewCount: 30,
+      isFeatured: true,
+      fabric: 'Georgette',
+      color: 'Blue',
+      occasion: 'Party Wear',
+      workType: 'Resham Embroidery and Real Mirror Border',
+      blousePiece: 'Included - Designer Chanderi Blouse Piece',
+      washCare: 'Dry Clean Only'
+    },
+    {
+      title: 'Maroon Heritage Kanjivaram Bridal Saree',
+      description: 'Make your wedding day unforgettable with this crimson maroon Kanjivaram saree. Featuring a thick gold-woven temple border, geometric checks, and a grand heavy pallu featuring mythical gandaberunda and elephant motifs.',
+      price: 18500,
+      compareAtPrice: 24500,
+      images: [
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[4]._id, // Wedding
+      stock: 5,
+      rating: 5.0,
+      reviewCount: 42,
+      isFeatured: true,
+      fabric: 'Silk',
+      color: 'Red',
+      occasion: 'Wedding',
+      workType: 'Korvai Weaving with Pure Zari',
+      blousePiece: 'Included - Grand Heavy Woven Silk Blouse',
+      washCare: 'Dry Clean Only'
+    },
+    {
+      title: 'Mint Green Summer Cotton Linen Saree',
+      description: 'Extremely light, highly absorbent, and elegant, this mint green cotton linen saree has delicate silver borders and geometric stripes. Excellent for hot summers, daily styling, or festive gatherings.',
+      price: 1600,
+      compareAtPrice: 2400,
+      images: [
+        'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1590156221122-c241e7bfcda7?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1583391733958-d25e07fac662?auto=format&fit=crop&w=800&q=80'
+      ],
+      category: categories[1]._id, // Cotton
+      stock: 50,
+      rating: 4.3,
+      reviewCount: 16,
+      isFeatured: false,
+      fabric: 'Linen',
+      color: 'Green',
+      occasion: 'Daily Wear',
+      workType: 'Silver Zari Palla and Pom-Poms',
+      blousePiece: 'Included - Linen Blend Running Piece',
+      washCare: 'Gentle Hand Wash'
+    }
   ];
 
   await Product.insertMany(products);

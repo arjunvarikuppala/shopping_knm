@@ -14,6 +14,7 @@ import CheckoutPage from '@/pages/customer/CheckoutPage';
 import OrdersPage from '@/pages/customer/OrdersPage';
 import OrderDetailPage from '@/pages/customer/OrderDetailPage';
 import ProfilePage from '@/pages/customer/ProfilePage';
+import WishlistPage from '@/pages/customer/WishlistPage';
 
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
@@ -26,6 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
 import AdminProductsPage from '@/pages/admin/AdminProductsPage';
+import AddProductPage from '@/pages/admin/AddProductPage';
 import AdminCategoriesPage from '@/pages/admin/AdminCategoriesPage';
 import AdminOrdersPage from '@/pages/admin/AdminOrdersPage';
 import AdminCustomersPage from '@/pages/admin/AdminCustomersPage';
@@ -41,6 +43,7 @@ export default function App() {
               <Route path="products" element={<ProductsPage />} />
               <Route path="products/:id" element={<ProductDetailPage />} />
               <Route path="cart" element={<CartPage />} />
+              <Route path="wishlist" element={<WishlistPage />} />
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:id" element={<OrderDetailPage />} />
@@ -62,6 +65,7 @@ export default function App() {
             >
               <Route index element={<AdminDashboardPage />} />
               <Route path="products" element={<AdminProductsPage />} />
+              <Route path="products/new" element={<AddProductPage />} />
               <Route path="categories" element={<AdminCategoriesPage />} />
               <Route path="orders" element={<AdminOrdersPage />} />
               <Route path="customers" element={<AdminCustomersPage />} />
