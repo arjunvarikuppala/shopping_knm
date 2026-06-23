@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { reviewApi } from '@/services';
 import { getErrorMessage } from '@/services/api';
-import Button from '@/components/ui/Button';
+
 import Spinner from '@/components/ui/Spinner';
 import { FaStar, FaTrash } from 'react-icons/fa';
 

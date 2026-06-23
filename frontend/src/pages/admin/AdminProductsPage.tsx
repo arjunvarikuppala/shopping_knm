@@ -52,14 +52,7 @@ export default function AdminProductsPage() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const openCreate = () => {
-    setEditingId(null);
-    setForm(emptyProduct);
-    setErrors({});
-    setImageFiles([]);
-    setExistingImages([]);
-    setModalOpen(true);
-  };
+
 
   const openEdit = (product: Product) => {
     setEditingId(product._id);

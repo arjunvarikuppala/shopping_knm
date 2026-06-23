@@ -48,7 +48,7 @@ export default function HomePage() {
   const fetchStoreReviews = async () => {
     try {
       const res = await reviewApi.getAll();
-      setStoreReviews(res.data.data);
+      setStoreReviews(res.data.data as any[]);
     } catch (err) {
       console.error(getErrorMessage(err));
     }

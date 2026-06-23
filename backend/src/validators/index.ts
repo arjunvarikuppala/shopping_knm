@@ -108,7 +108,7 @@ export const productQueryValidation = [
   query('category').optional().trim(),
   query('minPrice').optional().isFloat({ min: 0 }),
   query('maxPrice').optional().isFloat({ min: 0 }),
-  query('sort').optional().isIn(['price_asc', 'price_desc', 'rating', 'newest']),
+  query('sort').optional().isIn(['price_asc', 'price_desc', 'rating', 'newest', 'bestselling']),
   query('featured').optional().isBoolean(),
 ];
 

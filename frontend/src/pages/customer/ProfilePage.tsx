@@ -8,7 +8,7 @@ import { setUser } from '@/features/auth/authSlice';
 import { formatPrice, formatDate, getOrderStatusColor } from '@/utils';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import Spinner from '@/components/ui/Spinner';
+
 import Skeleton from '@/components/ui/Skeleton';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 
