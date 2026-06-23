@@ -19,9 +19,11 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     try {
       const { data } = await orderApi.getAll({ limit: 50 });
-      setOrders(data.data as Order[]);
+      const ordersData = Array.isArray(data?.data) ? data.data : [];
+      setOrders(ordersData as Order[]);
     } catch (err) {
       console.error(err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -72,27 +74,38 @@ export default function AdminOrdersPage() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="border-b last:border-0">
-                <td className="p-4 font-mono text-xs">{order._id.slice(-8)}</td>
-                <td className="p-4">
-                  {order.userId && typeof order.userId === 'object' && 'name' in order.userId ? (order.userId as any).name : 'N/A'}
-                </td>
-                <td className="p-4">{order.products.length}</td>
-                <td className="p-4">{formatPrice(order.totalAmount)}</td>
-                <td className="p-4">
-                  <span className={`rounded-full px-2 py-0.5 text-xs capitalize ${getOrderStatusColor(order.orderStatus)}`}>
-                    {order.orderStatus}
-                  </span>
-                </td>
-                <td className="p-4">{formatDate(order.createdAt)}</td>
-                <td className="p-4">
-                  <button onClick={() => openStatusModal(order)} className="text-accent hover:underline">
-                    Update
-                  </button>
+            {!orders || orders.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="p-8 text-center text-muted">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="text-4xl mb-4">📦</div>
+                    <p className="text-lg font-medium">No orders found.</p>
+                  </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              orders.map((order) => (
+                <tr key={order._id} className="border-b last:border-0 hover:bg-gray-50/50 transition-colors">
+                  <td className="p-4 font-mono text-xs">{order._id.slice(-8).toUpperCase()}</td>
+                  <td className="p-4">
+                    {order.userId && typeof order.userId === 'object' && 'name' in order.userId ? (order.userId as any).name : 'N/A'}
+                  </td>
+                  <td className="p-4">{order.products?.length || 0}</td>
+                  <td className="p-4 font-medium">{formatPrice(order.totalAmount)}</td>
+                  <td className="p-4">
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ${getOrderStatusColor(order.orderStatus)}`}>
+                      {order.orderStatus}
+                    </span>
+                  </td>
+                  <td className="p-4">{formatDate(order.createdAt)}</td>
+                  <td className="p-4">
+                    <button onClick={() => openStatusModal(order)} className="text-accent hover:underline font-medium">
+                      Update
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

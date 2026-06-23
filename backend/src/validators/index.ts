@@ -93,9 +93,10 @@ export const orderValidation = [
 ];
 
 export const reviewValidation = [
-  body('productId').isMongoId().withMessage('Invalid product ID'),
-  body('rating').isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
-  body('comment').trim().notEmpty().withMessage('Comment is required').isLength({ max: 1000 }),
+  body('productId').optional().isMongoId().withMessage('Invalid product ID'),
+  body('name').optional().trim(),
+  body('rating').isInt({ min: 1, max: 5 }).withMessage('Please select a rating.'),
+  body('comment').trim().notEmpty().withMessage('Please enter your feedback.').isLength({ max: 250 }),
 ];
 
 export const mongoIdParam = [param('id').isMongoId().withMessage('Invalid ID')];

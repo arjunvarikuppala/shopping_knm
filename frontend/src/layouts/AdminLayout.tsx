@@ -9,7 +9,7 @@ const navItems = [
   { to: '/admin/products/new', label: 'Add Product' },
   { to: '/admin/orders', label: 'Orders' },
   { to: '/admin/customers', label: 'Customers' },
-  { to: '#', label: 'Analytics' },
+  { to: '/admin/reviews', label: 'Reviews' },
 ];
 
 export default function AdminLayout() {
@@ -67,13 +67,26 @@ export default function AdminLayout() {
         </nav>
         
         <div className="border-t border-[#900020]/50 p-4 space-y-2">
+          <button onClick={() => navigate('/')} className="w-full text-center py-3 bg-[#D4AF37] text-white text-[11px] uppercase tracking-widest font-bold hover:bg-[#C5A017] transition-all rounded-lg shadow-sm border border-[#D4AF37] cursor-pointer mb-2">
+            🏠 Store Home
+          </button>
           <button onClick={handleLogout} className="w-full text-center py-3 bg-[#900020] text-white text-[11px] uppercase tracking-widest font-bold hover:bg-[#5A0012] transition-all rounded-lg shadow-sm border border-[#D4AF37]/30 cursor-pointer">
             Logout
           </button>
         </div>
       </aside>
-      <main className="ml-64 flex-1 p-8">
-        <Outlet />
+      <main className="ml-64 flex-1 flex flex-col relative">
+        <div className="absolute top-6 right-8 z-10">
+          <button 
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-2 bg-[#7A0019] text-white px-5 py-2.5 rounded-[12px] text-xs font-bold uppercase tracking-widest hover:text-[#D4AF37] transition-colors shadow-sm"
+          >
+            🏠 Back to Store
+          </button>
+        </div>
+        <div className="p-8 pt-16 mt-4">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

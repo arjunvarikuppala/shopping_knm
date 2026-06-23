@@ -45,15 +45,15 @@ export default function Footer() {
             <h4 className="font-display text-lg font-bold text-white mb-5 border-b border-[#D4AF37]/20 pb-2">
               Customer Policies
             </h4>
-            <ul className="space-y-3 text-sm text-[#FFF8E7]/70 font-light">
+            <ul className="space-y-3 text-sm font-light">
               <li>
-                <a href="#shipping" className="hover:text-[#D4AF37] transition-colors">Shipping Policy</a>
+                <a href="#shipping" className="text-[#D4AF37] hover:text-white transition-colors">Shipping Policy</a>
               </li>
               <li>
-                <a href="#returns" className="hover:text-[#D4AF37] transition-colors">Return Policy</a>
+                <a href="#returns" className="text-[#FFF8E7]/70 hover:text-[#D4AF37] transition-colors">Return Policy</a>
               </li>
               <li>
-                <a href="#privacy" className="hover:text-[#D4AF37] transition-colors">Privacy Policy</a>
+                <a href="#privacy" className="text-[#FFF8E7]/70 hover:text-[#D4AF37] transition-colors">Privacy Policy</a>
               </li>
             </ul>
           </div>

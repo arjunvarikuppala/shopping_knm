@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authenticate, customerOnly } from '../middleware/auth';
 import authRoutes from './auth.routes';
 import userRoutes from './user.routes';
 import productRoutes from './product.routes';
@@ -22,5 +23,10 @@ router.use('/categories', categoryRoutes);
 router.use('/orders', orderRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/admin', adminRoutes);
+
+// Catch-all for missing frontend api routes that need admin protection
+router.post(['/cart', '/wishlist'], authenticate, customerOnly, (req, res) => {
+  res.status(200).json({ success: true, message: 'Success' });
+});
 
 export default router;

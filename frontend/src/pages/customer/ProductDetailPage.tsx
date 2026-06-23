@@ -26,7 +26,7 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const isInWishlist = useAppSelector((state) => selectInWishlist(state, id || ''));
   
   const [product, setProduct] = useState<Product | null>(null);
@@ -79,6 +79,10 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleAddToCart = () => {
+    if (user?.role === 'admin') {
+      toast.error('Administrators cannot purchase products.');
+      return;
+    }
     if (!product || product.stock <= 0) return;
     dispatch(
       addToCart({
@@ -94,6 +98,10 @@ export default function ProductDetailPage() {
   };
 
   const handleBuyNow = () => {
+    if (user?.role === 'admin') {
+      toast.error('Admin accounts are restricted from placing orders.');
+      return;
+    }
     if (!product || product.stock <= 0) return;
     dispatch(
       addToCart({

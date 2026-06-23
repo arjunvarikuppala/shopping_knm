@@ -69,6 +69,18 @@ export const authorize = (...roles: UserRole[]) => {
   };
 };
 
+export const customerOnly = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  if (req.user && req.user.role === UserRole.ADMIN) {
+    next(new ForbiddenError('Administrator accounts cannot perform customer actions.'));
+    return;
+  }
+  next();
+};
+
 export const optionalAuth = async (
   req: Request,
   _res: Response,

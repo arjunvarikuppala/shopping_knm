@@ -4,7 +4,7 @@ import { orderApi } from '@/services';
 import { getErrorMessage } from '@/services/api';
 import { Order } from '@/types';
 import { formatPrice, formatDate, getOrderStatusColor } from '@/utils';
-import Spinner from '@/components/ui/Spinner';
+import Skeleton from '@/components/ui/Skeleton';
 import Button from '@/components/ui/Button';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 
@@ -35,7 +35,24 @@ function OrderDetail() {
     }
   };
 
-  if (loading) return <Spinner size="lg" className="min-h-[400px]" />;
+  if (loading) return (
+    <div className="container-app py-8 space-y-8">
+      <div>
+        <Skeleton className="mb-2 h-4 w-32" />
+        <Skeleton className="h-10 w-64 mb-2" />
+        <Skeleton className="h-4 w-48" />
+      </div>
+      <Skeleton className="h-32 w-full" />
+      <div className="grid gap-8 lg:grid-cols-2">
+        <Skeleton className="h-64 w-full" />
+        <div className="space-y-6">
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+
   if (!order) return <div className="container-app py-16 text-center">Order not found</div>;
 
   const canCancel = !['shipped', 'delivered', 'cancelled'].includes(order.orderStatus);

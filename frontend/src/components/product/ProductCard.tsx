@@ -13,12 +13,17 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
   const isInWishlist = useAppSelector((state) => selectInWishlist(state, product._id));
   
   const categoryName = typeof product.category === 'object' ? product.category.name : '';
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (user?.role === 'admin') {
+      toast.error('Administrators cannot purchase products.');
+      return;
+    }
     if (product.stock <= 0) return;
     dispatch(
       addToCart({

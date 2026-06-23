@@ -1,29 +1,26 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface IReview extends Document {
+export interface IStoreReview extends Document {
   userId: mongoose.Types.ObjectId;
-  productId?: mongoose.Types.ObjectId;
-  name?: string;
+  name: string;
   rating: number;
-  comment: string;
+  message: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const reviewSchema = new Schema<IReview>(
+const storeReviewSchema = new Schema<IStoreReview>(
   {
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    productId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Product',
-    },
     name: {
       type: String,
+      required: [true, 'Name is required'],
       trim: true,
+      maxlength: [100, 'Name cannot exceed 100 characters'],
     },
     rating: {
       type: Number,
@@ -31,11 +28,11 @@ const reviewSchema = new Schema<IReview>(
       min: [1, 'Rating must be at least 1'],
       max: [5, 'Rating cannot exceed 5'],
     },
-    comment: {
+    message: {
       type: String,
-      required: [true, 'Comment is required'],
+      required: [true, 'Feedback message is required'],
       trim: true,
-      maxlength: [250, 'Comment cannot exceed 250 characters'],
+      maxlength: [250, 'Feedback cannot exceed 250 characters'],
     },
   },
   {
@@ -50,6 +47,6 @@ const reviewSchema = new Schema<IReview>(
   },
 );
 
-reviewSchema.index({ createdAt: -1 });
+storeReviewSchema.index({ createdAt: -1 });
 
-export const Review = mongoose.model<IReview>('Review', reviewSchema);
+export const StoreReview = mongoose.model<IStoreReview>('StoreReview', storeReviewSchema);

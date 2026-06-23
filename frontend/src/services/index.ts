@@ -73,9 +73,10 @@ export const orderApi = {
 };
 
 export const reviewApi = {
+  getAll: () => api.get<ApiResponse>('/reviews'),
   getByProduct: (productId: string) => api.get<ApiResponse>(`/reviews/product/${productId}`),
 
-  create: (data: { productId: string; rating: number; comment: string }) =>
+  create: (data: { name?: string; productId?: string; rating: number; comment: string }) =>
     api.post<ApiResponse>('/reviews', data),
 
   delete: (id: string) => api.delete<ApiResponse>(`/reviews/${id}`),
