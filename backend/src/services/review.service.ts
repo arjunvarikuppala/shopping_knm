@@ -1,5 +1,7 @@
 import { Review } from '../models/Review';
+import { Order } from '../models/Order';
 import { NotFoundError, BadRequestError } from '../utils/errors';
+import { OrderStatus } from '../types';
 import mongoose from 'mongoose';
 
 export class ReviewService {
@@ -47,6 +49,16 @@ export class ReviewService {
 
   async createReview(userId: string, rating: number, comment: string, name?: string, productId?: string) {
     if (productId) {
+      const hasPurchased = await Order.findOne({
+        userId,
+        'products.productId': productId,
+        orderStatus: OrderStatus.DELIVERED,
+      });
+
+      if (!hasPurchased) {
+        throw new BadRequestError('You can only review products you have purchased and received');
+      }
+
       const existing = await Review.findOne({ userId, productId });
       if (existing) {
         throw new BadRequestError('You have already reviewed this product');

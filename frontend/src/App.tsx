@@ -8,33 +8,34 @@ import AdminLayout from '@/layouts/AdminLayout';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import Spinner from '@/components/ui/Spinner';
 
-import HomePage from '@/pages/customer/HomePage';
-import ProductsPage from '@/pages/customer/ProductsPage';
-import ProductDetailPage from '@/pages/customer/ProductDetailPage';
-import CartPage from '@/pages/customer/CartPage';
-import CheckoutPage from '@/pages/customer/CheckoutPage';
-import ProfilePage from '@/pages/customer/ProfilePage';
-import WishlistPage from '@/pages/customer/WishlistPage';
+const HomePage = lazy(() => import('@/pages/customer/HomePage'));
+const ProductsPage = lazy(() => import('@/pages/customer/ProductsPage'));
+const ProductDetailPage = lazy(() => import('@/pages/customer/ProductDetailPage'));
+const CartPage = lazy(() => import('@/pages/customer/CartPage'));
+const CheckoutPage = lazy(() => import('@/pages/customer/CheckoutPage'));
+const ProfilePage = lazy(() => import('@/pages/customer/ProfilePage'));
+const WishlistPage = lazy(() => import('@/pages/customer/WishlistPage'));
+const OrdersPage = lazy(() => import('@/pages/customer/OrdersPage'));
+const OrderDetailPage = lazy(() => import('@/pages/customer/OrderDetailPage'));
 
-import LoginPage from '@/pages/auth/LoginPage';
-import RegisterPage from '@/pages/auth/RegisterPage';
-import VerifyEmailPage from '@/pages/auth/VerifyEmailPage';
-import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
+const VerifyEmailPage = lazy(() => import('@/pages/auth/VerifyEmailPage'));
+const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
-import AdminProductsPage from '@/pages/admin/AdminProductsPage';
-import AddProductPage from '@/pages/admin/AddProductPage';
-import AdminCategoriesPage from '@/pages/admin/AdminCategoriesPage';
-import AdminOrdersPage from '@/pages/admin/AdminOrdersPage';
-import AdminCustomersPage from '@/pages/admin/AdminCustomersPage';
-import AdminReviewsPage from '@/pages/admin/AdminReviewsPage';
+const AdminDashboardPage = lazy(() => import('@/pages/admin/AdminDashboardPage'));
+const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'));
+const AddProductPage = lazy(() => import('@/pages/admin/AddProductPage'));
+const AdminCategoriesPage = lazy(() => import('@/pages/admin/AdminCategoriesPage'));
+const AdminOrdersPage = lazy(() => import('@/pages/admin/AdminOrdersPage'));
+const AdminCustomersPage = lazy(() => import('@/pages/admin/AdminCustomersPage'));
+const AdminReviewsPage = lazy(() => import('@/pages/admin/AdminReviewsPage'));
 
-const OrdersPage = lazy(() => import('@/pages/customer/OrdersPage'));
-const OrderDetailPage = lazy(() => import('@/pages/customer/OrderDetailPage'));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
                 <Route path="verify-email" element={<VerifyEmailPage />} />
                 <Route path="forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="reset-password" element={<ResetPasswordPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
 
               <Route

@@ -48,10 +48,16 @@ const productSchema = new Schema<IProduct>(
     images: {
       type: [String],
       default: [],
-      validate: {
-        validator: (v: string[]) => v.length <= 10,
-        message: 'Maximum 10 images allowed',
-      },
+      validate: [
+        {
+          validator: (v: string[]) => v.length > 0,
+          message: 'At least one image is required',
+        },
+        {
+          validator: (v: string[]) => v.length <= 10,
+          message: 'Maximum 10 images allowed',
+        },
+      ],
     },
     category: {
       type: Schema.Types.ObjectId,

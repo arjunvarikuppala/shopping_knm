@@ -1,6 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../services';
 import { sendSuccess, sendCreated } from '../utils/response';
+import { config } from '../config';
+
+const setTokenCookies = (res: Response, tokens: { accessToken: string; refreshToken: string }) => {
+  res.cookie('accessToken', tokens.accessToken, {
+    httpOnly: true,
+    secure: config.isProduction,
+    sameSite: 'strict',
+    maxAge: 15 * 60 * 1000, // 15 mins
+  });
+  res.cookie('refreshToken', tokens.refreshToken, {
+    httpOnly: true,
+    secure: config.isProduction,
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+};
+
+const clearTokenCookies = (res: Response) => {
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+};
 
 export class AuthController {
   sendOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -17,7 +38,8 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
-      sendSuccess(res, result, 'Login successful');
+      setTokenCookies(res, result.tokens);
+      sendSuccess(res, { user: result.user }, 'Login successful');
     } catch (error) {
       next(error);
     }
@@ -27,7 +49,8 @@ export class AuthController {
     try {
       const { credential } = req.body;
       const result = await authService.googleLogin(credential);
-      sendSuccess(res, result, 'Google login successful');
+      setTokenCookies(res, result.tokens);
+      sendSuccess(res, { user: result.user }, 'Google login successful');
     } catch (error) {
       next(error);
     }
@@ -35,9 +58,14 @@ export class AuthController {
 
   refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { refreshToken } = req.body;
+      const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+      if (!refreshToken) {
+        res.status(401).json({ success: false, message: 'Refresh token not found' });
+        return;
+      }
       const tokens = await authService.refreshToken(refreshToken);
-      sendSuccess(res, tokens, 'Token refreshed');
+      setTokenCookies(res, tokens);
+      sendSuccess(res, {}, 'Token refreshed');
     } catch (error) {
       next(error);
     }
@@ -46,6 +74,7 @@ export class AuthController {
   logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await authService.logout(req.user!.userId);
+      clearTokenCookies(res);
       sendSuccess(res, null, 'Logged out successfully');
     } catch (error) {
       next(error);
@@ -75,7 +104,8 @@ export class AuthController {
     try {
       const { name, email, mobile, password, otp } = req.body;
       const result = await authService.verifyOtp(name, email, mobile, password, otp);
-      sendSuccess(res, result, 'Email verified and login successful');
+      setTokenCookies(res, result.tokens);
+      sendSuccess(res, { user: result.user }, 'Email verified and login successful');
     } catch (error) {
       next(error);
     }

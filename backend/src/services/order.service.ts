@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Order, Product, User } from '../models';
 import { NotFoundError, BadRequestError, ForbiddenError } from '../utils/errors';
 import { OrderStatus, PaymentStatus } from '../types';
@@ -13,48 +14,60 @@ interface CreateOrderInput {
 
 export class OrderService {
   async createOrder(input: CreateOrderInput) {
-    const orderProducts = [];
-    let totalAmount = 0;
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    for (const item of input.products) {
-      const product = await Product.findById(item.productId);
-      if (!product || !product.isActive) {
-        throw new BadRequestError(`Product ${item.productId} not found`);
+    try {
+      const orderProducts = [];
+      let totalAmount = 0;
+
+      for (const item of input.products) {
+        const product = await Product.findOneAndUpdate(
+          { _id: item.productId, isActive: true, stock: { $gte: item.quantity } },
+          { $inc: { stock: -item.quantity } },
+          { new: true, session }
+        );
+
+        if (!product) {
+          throw new BadRequestError(`Product ${item.productId} not found or insufficient stock`);
+        }
+
+        orderProducts.push({
+          productId: product._id,
+          title: product.title,
+          price: product.price,
+          quantity: item.quantity,
+          image: product.images[0] || '',
+        });
+
+        totalAmount += product.price * item.quantity;
       }
-      if (product.stock < item.quantity) {
-        throw new BadRequestError(`Insufficient stock for ${product.title}`);
-      }
 
-      orderProducts.push({
-        productId: product._id,
-        title: product.title,
-        price: product.price,
-        quantity: item.quantity,
-        image: product.images[0] || '',
-      });
+      const estimatedDeliveryDate = new Date();
+      estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + 5);
 
-      totalAmount += product.price * item.quantity;
-      product.stock -= item.quantity;
-      await product.save();
+      const [order] = await Order.create([{
+        userId: input.userId,
+        products: orderProducts,
+        totalAmount,
+        shippingAddress: input.shippingAddress,
+        paymentMethod: input.paymentMethod,
+        notes: input.notes,
+        paymentStatus:
+          input.paymentMethod === 'cod' ? PaymentStatus.PENDING : PaymentStatus.PAID,
+        orderStatus: OrderStatus.PENDING,
+        estimatedDeliveryDate,
+      }], { session });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return order.populate('userId', 'name email');
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
     }
-
-    const estimatedDeliveryDate = new Date();
-    estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + 5);
-
-    const order = await Order.create({
-      userId: input.userId,
-      products: orderProducts,
-      totalAmount,
-      shippingAddress: input.shippingAddress,
-      paymentMethod: input.paymentMethod,
-      notes: input.notes,
-      paymentStatus:
-        input.paymentMethod === 'cod' ? PaymentStatus.PENDING : PaymentStatus.PAID,
-      orderStatus: OrderStatus.PENDING,
-      estimatedDeliveryDate,
-    });
-
-    return order.populate('userId', 'name email');
   }
 
   async getMyOrders(userId: string, page = 1, limit = 10) {

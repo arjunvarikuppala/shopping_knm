@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, useState } from 'react';
+import { InputHTMLAttributes, forwardRef, useState, useId } from 'react';
 import { cn } from '@/utils';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -9,20 +9,22 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, className, id, type, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
+    const generatedId = useId();
+    const inputId = id || generatedId;
     const isPassword = type === 'password';
     const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
     return (
       <div className="w-full">
         {label && (
-          <label htmlFor={id} className="label">
+          <label htmlFor={inputId} className="label">
             {label}
           </label>
         )}
         <div className="relative">
           <input
             ref={ref}
-            id={id}
+            id={inputId}
             type={inputType}
             className={cn('input w-full', isPassword && 'pr-10', error && 'border-red-500 focus:border-red-500 focus:ring-red-500/20', className)}
             {...props}

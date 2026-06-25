@@ -60,7 +60,7 @@ export const productValidation = [
   body('description').trim().notEmpty().withMessage('Description is required'),
   body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
   body('compareAtPrice').optional().isFloat({ min: 0 }),
-  body('images').optional().isArray(),
+  body('images').isArray({ min: 1 }).withMessage('At least one image is required'),
   body('category').notEmpty().withMessage('Category is required').isMongoId(),
   body('stock').isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
   body('isFeatured').optional().isBoolean(),
